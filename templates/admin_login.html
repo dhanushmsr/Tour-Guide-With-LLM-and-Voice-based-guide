@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inkwake | Admin Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glass-bg { 
+            background: rgba(17, 24, 39, 0.8); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .glow-orange {
+            box-shadow: 0 0 20px rgba(234, 88, 12, 0.15);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-enter { animation: fadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-gray-950 text-white flex items-center justify-center min-h-screen selection:bg-orange-500/30 font-sans">
+
+    <div class="glass-bg p-10 rounded-[3rem] border border-white/5 shadow-2xl w-full max-w-md glow-orange animate-enter">
+        <div class="text-center mb-10">
+            <div class="w-20 h-20 bg-orange-600/10 rounded-3xl flex items-center justify-center mx-auto mb-6 text-orange-500 border border-orange-500/20">
+                <i class="fas fa-fingerprint text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-black uppercase tracking-tighter">Command Center</h1>
+            <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mt-2">Authorization Required</p>
+        </div>
+
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('error')) {
+                document.write(`
+                    <div class="mb-6 p-4 bg-red-600/10 border border-red-600/20 rounded-2xl text-red-500 text-xs font-bold text-center uppercase tracking-widest animate-pulse">
+                        <i class="fas fa-exclamation-triangle mr-2"></i> Access Denied
+                    </div>
+                `);
+            }
+        </script>
+
+        <form action="/admin/login" method="post" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-2">Access Key</label>
+                <div class="relative">
+                    <input type="password" name="password" placeholder="••••••••" required
+                           class="w-full bg-black/50 border border-white/5 p-5 rounded-2xl outline-none focus:border-orange-500 transition-all text-center tracking-[0.5em] text-xl font-bold">
+                </div>
+            </div>
+            
+            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 py-5 rounded-2xl font-black uppercase tracking-widest text-sm transition transform hover:-translate-y-1 shadow-xl shadow-orange-900/30">
+                Unlock Dashboard
+            </button>
+        </form>
+        
+        <div class="mt-10 pt-8 border-t border-white/5 text-center">
+            <a href="/" class="group text-gray-500 hover:text-white text-xs font-black uppercase tracking-[0.2em] transition flex items-center justify-center gap-3">
+                <i class="fas fa-home group-hover:-translate-y-1 transition-transform"></i>
+                Return to Public Site
+            </a>
+        </div>
+    </div>
+
+    <div class="fixed bottom-8 text-center w-full">
+        <p class="text-[9px] text-gray-700 font-black uppercase tracking-[0.3em]">
+            System: Inkwake Secured / Node: AWS-EC2-KOL
+        </p>
+    </div>
+
+</body>
+</html>

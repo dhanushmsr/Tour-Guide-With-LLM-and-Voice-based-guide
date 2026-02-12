@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enquire | Inkwake Heritage Curator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .glass-card { 
+            background: rgba(17, 24, 39, 0.8); 
+            backdrop-filter: blur(20px) saturate(160%); 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .form-input:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            outline: none;
+        }
+        textarea::-webkit-scrollbar { width: 4px; }
+        textarea::-webkit-scrollbar-thumb { background: #1e40af; border-radius: 10px; }
+        
+        @keyframes success-pulse {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-success { animation: success-pulse 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex items-center justify-center p-6 font-sans selection:bg-blue-500/30">
+
+    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8 animate-fade-in">
+            <div>
+                <a href="/" class="text-2xl font-black text-blue-500 tracking-tighter uppercase flex items-center gap-2 mb-4 group">
+                    <i class="fas fa-gopuram group-hover:rotate-12 transition-transform"></i> Inkwake
+                </a>
+                <h1 class="text-5xl font-black tracking-tighter uppercase leading-none mb-6">
+                    Connect with the <span class="text-blue-500">Curator</span>
+                </h1>
+                <p class="text-gray-400 text-lg leading-relaxed">
+                    Have questions about specific inscriptions, or want to contribute to the digital archives? Send a direct dispatch to our heritage team.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex items-center gap-4 text-xs font-black text-gray-500 uppercase tracking-[0.2em]">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center">
+                        <i class="fas fa-envelope text-blue-500"></i>
+                    </div>
+                    archive@inkwake.tn
+                </div>
+                <div class="flex items-center gap-4 text-xs font-black text-gray-500 uppercase tracking-[0.2em]">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-blue-500"></i>
+                    </div>
+                    Thanjavur Heritage Hub
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-8 md:p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden" id="formContainer">
+            <div class="absolute -top-10 -right-10 opacity-5 pointer-events-none">
+                <i class="fas fa-paper-plane text-[12rem] text-blue-500"></i>
+            </div>
+
+            <form id="enquiryForm" class="space-y-6 relative z-10">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Registered Traveler</label>
+                    <input type="text" name="name" id="userNameInput" required placeholder="Ponniyin Selvan" 
+                           class="form-input w-full bg-gray-950 border border-gray-800 p-4 rounded-2xl transition-all font-bold">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Email Address</label>
+                    <input type="email" name="email" required placeholder="selvan@heritage.com" 
+                           class="form-input w-full bg-gray-950 border border-gray-800 p-4 rounded-2xl transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Dynasty of Interest</label>
+                    <div class="relative">
+                        <select name="subject" class="form-input w-full bg-gray-950 border border-gray-800 p-4 rounded-2xl appearance-none cursor-pointer">
+                            <option value="General">General Inquiry</option>
+                            <option value="Chola">Chola Architecture</option>
+                            <option value="Pandya">Pandya Inscriptions</option>
+                            <option value="Pallava">Pallava Sculpture</option>
+                            <option value="Contribution">Content Contribution</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Message</label>
+                    <textarea name="message" rows="4" required placeholder="Tell us more about your discovery or query..." 
+                              class="form-input w-full bg-gray-950 border border-gray-800 p-4 rounded-2xl transition-all resize-none"></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-6 rounded-3xl font-black uppercase tracking-[0.3em] text-[10px] transition transform hover:-translate-y-1 shadow-2xl shadow-blue-900/40 flex items-center justify-center gap-3">
+                    <span>Dispatch Protocol</span> <i class="fas fa-paper-plane" id="btnIcon"></i>
+                </button>
+            </form>
+            
+            <div id="successState" class="hidden relative z-10 py-12 text-center animate-success">
+                <div class="w-24 h-24 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-blue-500/30">
+                    <i class="fas fa-check text-4xl text-blue-500"></i>
+                </div>
+                <h3 class="text-3xl font-black uppercase tracking-tighter mb-4">Vault Archived</h3>
+                <p class="text-gray-400 mb-10 leading-relaxed px-6">Your dispatch has been successfully stored in the Inkwake archives. The Curator will review your transmission shortly.</p>
+                <button onclick="location.reload()" class="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] hover:text-white transition border-b border-blue-500/30 pb-1">
+                    Initiate New Transmission
+                </button>
+            </div>
+
+            <div class="mt-6 flex flex-col items-center gap-4">
+                <button onclick="window.close()" class="text-[9px] font-black text-gray-600 uppercase tracking-widest hover:text-white transition">
+                    Terminals: Close Session
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Synchronize with Registry Identity
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('inkwake_username');
+            const nameInput = document.getElementById('userNameInput');
+            
+            if (savedName && nameInput) {
+                nameInput.value = savedName;
+                nameInput.classList.add('border-blue-500/30', 'text-blue-400');
+            }
+        });
+
+        // AJAX Form Submission Logic
+        const enquiryForm = document.getElementById('enquiryForm');
+        const formContainer = document.getElementById('formContainer');
+        const successState = document.getElementById('successState');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnIcon = document.getElementById('btnIcon');
+
+        enquiryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Visual feedback for processing
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            submitBtn.querySelector('span').innerText = "Syncing with Vault...";
+            btnIcon.className = "fas fa-circle-notch fa-spin ml-2";
+
+            const formData = new FormData(enquiryForm);
+
+            try {
+                const response = await fetch('/submit-enquiry', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Hide form and show success state
+                    enquiryForm.classList.add('hidden');
+                    successState.classList.remove('hidden');
+                } else {
+                    throw new Error('Vault Transmission Failed');
+                }
+            } catch (error) {
+                alert("Protocol Error: Unable to reach the Inkwake Vault. Please try again.");
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                submitBtn.querySelector('span').innerText = "Retry Dispatch";
+                btnIcon.className = "fas fa-paper-plane ml-2";
+            }
+        });
+
+        // Simple Fade-in Animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

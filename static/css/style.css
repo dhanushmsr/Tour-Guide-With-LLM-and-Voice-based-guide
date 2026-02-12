@@ -1,0 +1,222 @@
+
+/* Inkwake Heritage Guide - Innovative UI System
+    Theme: Modern Glassmorphism & Heritage Orange
+*/
+
+:root {
+    --primary: #ff6b35;       /* Heritage Orange */
+    --primary-glow: rgba(255, 107, 53, 0.4);
+    --bg-dark: #0a0c10;       /* Deep Obsidian */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: #f8f9fa;
+    --text-muted: #a0aec0;
+    --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-dark);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-main);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* --- Innovative Background Mesh --- */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, #1a1e26 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, #14181f 0%, transparent 40%);
+    z-index: -1;
+}
+
+/* --- Glassmorphism Core --- */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* --- Responsive Navigation --- */
+.glass-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(10, 12, 16, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+/* --- Innovative Button Hovers --- */
+.btn {
+    padding: 12px 28px;
+    border-radius: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.primary-btn {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+/* Kinetic Hover Effect */
+.primary-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px var(--primary-glow);
+    filter: brightness(1.1);
+}
+
+.primary-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+
+.primary-btn:hover::after {
+    left: 100%;
+}
+
+/* --- Chat Interface Design --- */
+.chat-wrapper {
+    margin-top: 2rem;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-box {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.bot-msg, .user-msg {
+    max-width: 80%;
+    padding: 14px 20px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.bot-msg {
+    align-self: flex-start;
+    background: var(--glass-border);
+    border-bottom-left-radius: 4px;
+}
+
+.user-msg {
+    align-self: flex-end;
+    background: var(--primary);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+/* --- Responsive Layout Utilities --- */
+@media (max-width: 768px) {
+    .container { padding: 1rem; }
+    .hero-card h1 { font-size: 2rem; }
+    .btn { width: 100%; justify-content: center; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hidden { display: none !important; }
+/* Centering the Hero Content */
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 80vh;
+}
+
+/* Innovative Glassmorphism Language Switcher */
+.lang-switcher {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+}
+
+.lang-btn {
+    padding: 8px 20px;
+    border-radius: 25px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.lang-btn.active {
+    background: #FFD700; /* Gold for Heritage feel */
+    color: black;
+}
+.chat-container {
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 20px;
+    background: #f4f4f9;
+    padding: 20px;
+}
+
+.message {
+    padding: 12px 18px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    max-width: 80%;
+}
+
+.user-msg {
+    background: #007bff;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.bot-msg {
+    background: white;
+    border: 1px solid #ddd;
+    align-self: flex-start;
+}

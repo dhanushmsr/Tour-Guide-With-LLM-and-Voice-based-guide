@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inkwake | Initiate Registry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #020617; overflow: hidden; }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .input-glow:focus {
+            border-color: #f97316 !important;
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+        }
+
+        .hero-gradient {
+            background: radial-gradient(circle at center, rgba(249, 115, 22, 0.1) 0%, rgba(2, 6, 23, 1) 70%);
+        }
+    </style>
+</head>
+<body class="text-gray-100 flex items-center justify-center min-h-screen relative">
+
+    <div class="absolute inset-0 z-0 hero-gradient"></div>
+    <div class="absolute top-20 left-20 w-64 h-64 bg-orange-600/10 rounded-full blur-[120px] animate-pulse"></div>
+
+    <main class="container mx-auto px-6 relative z-10">
+        <div class="max-w-xl mx-auto glass-panel p-10 md:p-16 rounded-[4rem] shadow-2xl relative overflow-hidden">
+            
+            <div class="text-center mb-10">
+                <div class="w-16 h-16 bg-orange-600 rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-xl shadow-orange-900/40 mb-6">
+                    <i class="fas fa-id-badge"></i>
+                </div>
+                <h2 class="text-4xl font-black tracking-tighter uppercase mb-2">Initiate <span class="text-orange-500">Registry</span></h2>
+                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Identification for the Oracle Node</p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Full Name</label>
+                    <input type="text" id="regName" placeholder="Enter Traveler Name" 
+                           class="input-glow w-full bg-gray-950/50 border border-white/10 p-5 rounded-3xl outline-none transition font-bold text-white">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Email Address</label>
+                    <input type="email" id="regEmail" placeholder="archivist@inkwake.com" 
+                           class="input-glow w-full bg-gray-950/50 border border-white/10 p-5 rounded-3xl outline-none transition font-bold text-white">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Phone Number</label>
+                    <input type="tel" id="regPhone" placeholder="+91 XXXXX XXXXX" 
+                           class="input-glow w-full bg-gray-950/50 border border-white/10 p-5 rounded-3xl outline-none transition font-bold text-white">
+                </div>
+
+                <button onclick="processRegistry()" class="w-full bg-orange-600 py-6 rounded-3xl font-black uppercase tracking-widest text-xs hover:bg-orange-500 transition-all transform hover:-translate-y-1 shadow-2xl shadow-orange-900/40">
+                    Create Identity
+                </button>
+            </div>
+
+            <div class="mt-8 text-center">
+                <a href="/" class="text-[9px] font-black text-gray-600 hover:text-orange-500 uppercase tracking-widest transition">
+                    <i class="fas fa-arrow-left mr-2"></i> Return to Archives
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function processRegistry() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+
+            if (!name || !email || !phone) {
+                alert("Please fill all identity fields.");
+                return;
+            }
+
+            // 1. Local Persistence (for the Oracle Greeting)
+            localStorage.setItem('inkwake_username', name);
+
+            // 2. Synchronize with Admin Vault (Backend)
+            try {
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('email', email);
+                formData.append('phone', phone);
+
+                const response = await fetch('/admin/log-user', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert(`Welcome, ${name}. Identity synchronized.`);
+                    window.location.href = '/chatbot-ui'; // Move directly to Oracle
+                } else {
+                    alert("Vault sync failed. Proceeding with local session.");
+                    window.location.href = '/chatbot-ui';
+                }
+            } catch (error) {
+                console.error("Registry Error:", error);
+                window.location.href = '/chatbot-ui';
+            }
+        }
+    </script>
+</body>
+</html>

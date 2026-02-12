@@ -1,0 +1,79 @@
+[
+    {
+        "id": "thanjavur-big-temple",
+        "name": "Brihadisvara Temple",
+        "category": "Chola",
+        "district": "Thanjavur",
+        "history_text": "Built by Raja Raja Chola I in 1010 AD, this UNESCO World Heritage site is a masterpiece of Dravidian architecture. The temple's 'Vimana' tower is 216 feet high and is one of the tallest in the world. Interestingly, the shadow of the main tower never falls on the ground at noon.",
+        "culture": "A center for Bharatanatyam and Tamil music, the temple symbolizes the peak of Chola engineering and religious devotion.",
+        "video_url": "https://www.youtube.com/embed/P_mKIdE8vXw",
+        "image_url": "/static/images/brihadisvara_temple.jpg",
+        "coordinates": {
+            "lat": 10.7828,
+            "lng": 79.1318
+        },
+        "gallery": []
+    },
+    {
+        "id": "mahabalipuram-shore",
+        "name": "Shore Temple",
+        "category": "Pallava",
+        "district": "Mahabalipuram",
+        "history_text": "One of the oldest structural stone temples of South India, built by the Pallava King Narasimhavarman II in the 8th century. It overlooks the Bay of Bengal and was originally used as a landmark for sailors, known as the 'Seven Pagodas'.",
+        "culture": "Famous for its intricate granite carvings, it represents the transition from rock-cut architecture to structural temples featuring stunning carvings of Lord Shiva and Vishnu.",
+        "video_url": "https://www.youtube.com/embed/nC0fF8Gf_u8",
+        "image_url": "/static/images/shore_temple.png",
+        "coordinates": {
+            "lat": 12.616,
+            "lng": 80.1929
+        },
+        "gallery": []
+    },
+    {
+        "id": "madurai-meenakshi",
+        "name": "Meenakshi Amman Temple",
+        "category": "Pandya",
+        "district": "Madurai",
+        "history_text": "The heart of the 2,500-year-old city of Madurai, this temple complex features 14 gateway towers (Gopurams), the tallest being 170 feet. While the current structure was rebuilt by the Nayak rulers, its roots trace back to the Pandya dynasty foundations.",
+        "culture": "Known for its 'Hall of a Thousand Pillars', it is a living center of Tamil culture, hosting massive festivals like the Chithirai Festival.",
+        "video_url": "https://www.youtube.com/embed/e1k3v4vV4pI",
+        "image_url": "/static/images/meenakshi_amman_temple.jpg",
+        "coordinates": {
+            "lat": 9.9195,
+            "lng": 78.1193
+        },
+        "gallery": []
+    },
+    {
+        "id": "isha-adiyogi-",
+        "name": "Isha Adiyogi ",
+        "category": "Nayak",
+        "district": "Coimbatore",
+        "image_url": "/static/images/isha_adiyogi_.jpg",
+        "gallery": [
+            "https://dynamic-media.tacdn.com/media/photo-o/2f/05/ec/34/caption.jpg?w=1100&h=800&s=1"
+        ],
+        "video_url": "",
+        "history_text": "Visit the headquarters of the spiritual leader known as Sadhguru during this private, half-day excursion to the Isha Foundation and Yoga Center, which includes a tasty lunch in a local restaurant. Departing from your Coimbatore hotel, you\u2019ll travel ",
+        "culture": "Sivan ",
+        "coordinates": {
+            "lat": 12.221,
+            "lng": 60.456
+        }
+    },
+    {
+        "id": "courtallam-falls",
+        "name": "Courtallam falls",
+        "category": "Pandya",
+        "district": "Tenaksi",
+        "image_url": "/static/images/courtallam_falls.jpg",
+        "gallery": [],
+        "video_url": "https://www.youtube.com/watch?v=-oHmOb1a0BU",
+        "history_text": "Coutrallam Falls (also called Kutralam/Kuttalam Falls) is located in Tenkasi district in the South Indian state of Tamil Nadu bordering Kollam district, Kerala. The falls is located on the Western Ghats on the river Chittar and is considered a \"medical spa\" on account of the medical smell in the waters. [clarification needed] It is located 5 km (3.1 mi) from the nearest city Tenkasi. There are a total of nine falls of which Peraruvi, Aintharuvi and Puli Aruvi being the most prominent.",
+        "culture": "Monkey ",
+        "coordinates": {
+            "lat": 10.133,
+            "lng": 79.22
+        }
+    }
+]

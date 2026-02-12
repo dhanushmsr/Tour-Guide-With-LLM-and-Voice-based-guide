@@ -1,0 +1,1 @@
+from app.database import get_all_enquiries

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inkwake AI | Digital Oracle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
+        
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            background: radial-gradient(circle at top right, #1e293b, #020617);
+        }
+
+        /* 2026 Glassmorphism System */
+        .glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Scrollable Message Engine */
+        #chat-box { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 2rem;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Neural Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 10px; }
+
+        .typing-dot {
+            animation: typing 1.4s infinite;
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            margin: 0 2px;
+            background: #f97316;
+            border-radius: 50%;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .input-area { position: sticky; bottom: 0; z-index: 50; }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="p-6 glass shrink-0 relative z-50">
+        <div class="container mx-auto flex justify-between items-center max-w-5xl">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(249,115,22,0.4)]">
+                    <i class="fas fa-robot text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black uppercase tracking-tighter">Inkwake <span class="text-orange-500">Oracle</span></h1>
+                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Neural Heritage Node v2.6</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="clearChat()" class="text-[9px] font-black text-gray-500 hover:text-white uppercase tracking-widest transition">Reset Logs</button>
+                <a href="/explorer" class="px-6 py-2 rounded-xl bg-white/5 hover:bg-orange-600 transition-all text-[10px] font-black uppercase tracking-[0.2em] border border-white/10">
+                    Exit Circuit
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main id="chat-box" class="container mx-auto max-w-4xl space-y-8 custom-scroll py-10">
+        </main>
+
+    <div id="typing-indicator" class="hidden container mx-auto max-w-4xl px-10 mb-4 transition-opacity">
+        <div class="flex items-center gap-3 bg-gray-900/80 w-fit px-5 py-3 rounded-2xl border border-white/5 shadow-2xl">
+            <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">Oracle Processing</span>
+            <div class="flex">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="input-area glass p-6 shrink-0">
+        <div class="container mx-auto max-w-4xl relative">
+            <div class="flex gap-4 items-center bg-gray-900/50 border border-white/10 p-2 rounded-[2.5rem] shadow-2xl focus-within:border-orange-500/50 transition-all">
+                <input type="text" id="userInput" 
+                       onkeypress="handleKeyPress(event)" 
+                       placeholder="Ask about Chola Vimanas, dynasties, or architecture..." 
+                       class="flex-1 bg-transparent px-8 py-4 outline-none font-medium placeholder:text-gray-600 text-white">
+                
+                <button onclick="sendMessage()" class="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center hover:bg-orange-500 hover:scale-105 transition shadow-xl shadow-orange-900/30">
+                    <i class="fas fa-paper-plane text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const userInput = document.getElementById('userInput');
+
+        // Initial Identity Greeting
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('inkwake_username') || 'Traveler';
+            appendMessage('AI', `Vanakkam, <b>${savedName}</b>! I am the Inkwake Digital Oracle. I have indexed the chronicles of the Tamil Empires. What historical secrets shall we unlock?`);
+        });
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function clearChat() {
+            if(confirm("Wipe current transmission logs?")) {
+                chatBox.innerHTML = '';
+                location.reload();
+            }
+        }
+
+        function appendMessage(sender, text) {
+            const isAI = sender === 'AI';
+            const msgHtml = `
+                <div class="flex gap-5 ${isAI ? '' : 'justify-end'} animate-fade-in">
+                    ${isAI ? `<div class="w-12 h-12 rounded-2xl bg-orange-600 flex-shrink-0 flex items-center justify-center text-xs font-black shadow-lg">AI</div>` : ''}
+                    <div class="${isAI ? 'glass-card' : 'bg-orange-600/20 border-orange-600/30'} p-6 rounded-[2rem] ${isAI ? 'rounded-tl-none' : 'rounded-tr-none'} border max-w-[80%] shadow-xl group relative">
+                        <p class="text-[15px] font-medium leading-relaxed ${isAI ? 'text-gray-200' : 'text-orange-100'}">${text}</p>
+                        ${isAI ? `
+                            <button onclick="playVoice(this)" data-text="${text.replace(/"/g, '&quot;')}" class="absolute -right-12 bottom-0 text-gray-500 hover:text-orange-500 transition opacity-0 group-hover:opacity-100">
+                                <i class="fas fa-volume-up"></i>
+                            </button>` : ''}
+                    </div>
+                    ${!isAI ? `<div class="w-12 h-12 rounded-2xl bg-gray-800 flex-shrink-0 flex items-center justify-center text-[10px] border border-white/10 font-black">YOU</div>` : ''}
+                </div>
+            `;
+            chatBox.innerHTML += msgHtml;
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+        }
+
+        async function playVoice(btn) {
+            const text = btn.getAttribute('data-text');
+            btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i>';
+            try {
+                // Determine language preference from state or storage
+                const lang = localStorage.getItem('inkwake_lang') || 'en';
+                const res = await fetch(`/chatbot/voice-guide?text=${encodeURIComponent(text)}&lang=${lang}`);
+                const data = await res.json();
+                if(data.audio_url) {
+                    const audio = new Audio(data.audio_url);
+                    audio.play();
+                }
+            } catch(e) { console.error("Voice Node Offline"); }
+            btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+
+        async function sendMessage() {
+            const query = userInput.value.trim();
+            if(!query) return;
+
+            appendMessage('YOU', query);
+            userInput.value = '';
+            
+            typingIndicator.classList.remove('hidden');
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+
+            try {
+                const username = localStorage.getItem('inkwake_username') || 'Explorer';
+                const lang = localStorage.getItem('inkwake_lang') || 'en';
+                
+                const response = await fetch('/chatbot/ask', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        query: query, 
+                        lang: lang,
+                        username: username 
+                    })
+                });
+
+                const data = await response.json();
+                typingIndicator.classList.add('hidden');
+                
+                if(data.status === "success") {
+                    appendMessage('AI', data.response);
+                } else {
+                    appendMessage('AI', data.response || "Oracle Sync Error.");
+                }
+            } catch(e) {
+                typingIndicator.classList.add('hidden');
+                appendMessage('AI', "Transmission failed. The digital archives are currently out of sync.");
+            }
+        }
+    </script>
+</body>
+</html>
