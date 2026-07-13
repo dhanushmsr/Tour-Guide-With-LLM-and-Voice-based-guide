@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up | Vardhan Holidays India{% endblock %}
+
+{% block extra_head %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); 
+        color: #334155; 
+    }
+
+    .glass-panel { 
+        background: #ffffff; 
+        border: 1px solid #e2e8f0; 
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        border-radius: 2rem; 
+    }
+
+    .custom-input { 
+        width: 100%; 
+        background: #ffffff; 
+        border: 1px solid #cbd5e1; 
+        padding: 1.1rem; 
+        border-radius: 1rem; 
+        color: #1e293b; 
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .custom-input:focus { 
+        border-color: #f97316; 
+        outline: none; 
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1); 
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-16 max-w-lg">
+    <div class="glass-panel p-10 md:p-12 shadow-xl border border-slate-100">
+        <div class="text-center mb-10">
+            <img src="/static/images/logo.png" alt="Vardhan Holidays India" class="h-12 object-contain mx-auto mb-6">
+            
+            <h2 class="text-3xl font-bold text-slate-800 tracking-tight mb-2">Create Your Profile</h2>
+            <p class="text-slate-500 text-sm font-medium">Join us to start planning your heritage journey.</p>
+        </div>
+
+        <div class="space-y-5">
+            <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
+                <input type="text" id="regName" placeholder="Enter your full name" class="custom-input">
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                <input type="email" id="regEmail" placeholder="name@example.com" class="custom-input">
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Phone Number</label>
+                <input type="tel" id="regPhone" placeholder="+91 XXXXX XXXXX" class="custom-input">
+            </div>
+
+            <button onclick="processRegistry()" class="w-full bg-orange-600 hover:bg-orange-500 py-4 rounded-xl font-bold uppercase tracking-widest text-xs text-white transition-all shadow-md hover:shadow-lg hover:shadow-orange-500/30 transform hover:-translate-y-0.5 mt-4">
+                Register Now
+            </button>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="/" class="text-xs font-bold text-slate-400 hover:text-orange-600 uppercase tracking-widest transition-all">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function processRegistry() {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+
+        if (!name || !email || !phone) { 
+            alert("Please fill in all fields to continue."); 
+            return; 
+        }
+        
+        // Save locally for the bot interface
+        localStorage.setItem('inkwake_username', name);
+
+        try {
+            const formData = new FormData();
+            formData.append('name', name); 
+            formData.append('email', email); 
+            formData.append('phone', phone);
+            
+            const res = await fetch('/admin/log-user', { method: 'POST', body: formData });
+            
+            // Redirecting user to the Chatbot UI after registration
+            if (res.ok) { 
+                window.location.href = '/chatbot-ui'; 
+            } else { 
+                alert("Account created locally. Proceeding..."); 
+                window.location.href = '/chatbot-ui'; 
+            }
+        } catch { 
+            window.location.href = '/chatbot-ui'; 
+        }
+    }
+</script>
+{% endblock %}

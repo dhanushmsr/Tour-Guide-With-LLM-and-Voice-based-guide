@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}Premium South India Tours | Vardhan Holidays India{% endblock %}
+
+{% block extra_head %}
+<link rel="icon" type="image/png" href="/static/images/icon.png">
+<link rel="apple-touch-icon" href="/static/images/icon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+        color: #334155;
+        overflow-x: hidden;
+    }
+
+    /* Reference Colors & Themes */
+    :root {
+        --teal-dark: #0A5C5A;
+        --teal-light: #0D7073;
+        --accent-gold: #F5A623;
+        --card-blue: #3B82F6;
+        --card-yellow: #F59E0B;
+        --card-green: #10B981;
+    }
+
+    /* --- Custom Backgrounds & Overlays --- */
+    .hero-bg-overlay {
+        background: linear-gradient(135deg, rgba(10, 92, 90, 0.95) 0%, rgba(13, 112, 115, 0.9) 100%);
+        z-index: 1;
+    }
+    
+    .bg-wavy-pattern {
+        background-color: #F8F9FA;
+        background-image: repeating-radial-gradient(circle at 0 0, transparent 0, #F8F9FA 10px, rgba(13, 112, 115, 0.03) 10px, rgba(13, 112, 115, 0.03) 11px);
+    }
+
+    .bg-dotted-map {
+        background-image: radial-gradient(rgba(13, 112, 115, 0.1) 2px, transparent 2px);
+        background-size: 30px 30px;
+    }
+
+    /* --- Animations --- */
+    @keyframes float-clouds {
+        0% { transform: translateX(-10%); opacity: 0.4; }
+        50% { transform: translateX(10%); opacity: 0.7; }
+        100% { transform: translateX(-10%); opacity: 0.4; }
+    }
+
+    @keyframes drive-car {
+        0% { transform: translateX(-50vw) translateY(20px) rotate(-5deg); opacity: 0;}
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateX(50vw) translateY(-20px) rotate(5deg); opacity: 0;}
+    }
+
+    /* Floating effect for the image container */
+    @keyframes float-arch {
+        0% { transform: translateY(0px); filter: drop-shadow(0 20px 30px rgba(0,0,0,0.4)); }
+        50% { transform: translateY(-15px); filter: drop-shadow(0 30px 40px rgba(0,0,0,0.5)); }
+        100% { transform: translateY(0px); filter: drop-shadow(0 20px 30px rgba(0,0,0,0.4)); }
+    }
+
+    /* UPDATED: Elegant Dome Arch Container */
+    .arch-container {
+        border-radius: 250px 250px 20px 20px; /* Creates the admiring, premium dome shape */
+        animation: float-arch 6s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+        border: 4px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.2);
+    }
+
+    /* 5-Second Image Slider Animations (15s total for 3 images) */
+    .slider-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        animation: fade-slide 15s infinite;
+        z-index: 0;
+        transition: transform 0.5s ease;
+    }
+
+    .slide-1 { animation-delay: 0s; }
+    .slide-2 { animation-delay: 5s; }
+    .slide-3 { animation-delay: 10s; }
+
+    @keyframes fade-slide {
+        0%, 28% { opacity: 1; transform: scale(1); z-index: 2; }
+        33%, 95% { opacity: 0; transform: scale(1.05); z-index: 1; }
+        100% { opacity: 1; transform: scale(1); z-index: 2; }
+    }
+
+    /* --- Scroll Reveal System --- */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.2s; }
+    .reveal-delay-2 { transition-delay: 0.4s; }
+
+    /* --- Service Cards --- */
+    .service-card {
+        background: #ffffff;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        padding-bottom: 3rem;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    .service-card:hover { 
+        transform: translateY(-15px); 
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); 
+    }
+    .service-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 70px;
+        clip-path: polygon(0 30%, 100% 0, 100% 100%, 0% 100%);
+        z-index: 0;
+        transition: height 0.4s ease;
+    }
+    .service-card:hover::after { height: 85px; }
+    .card-blue::after { background: linear-gradient(to right, var(--card-blue), #60A5FA); }
+    .card-yellow::after { background: linear-gradient(to right, var(--card-yellow), #FBBF24); }
+    .card-green::after { background: linear-gradient(to right, var(--card-green), #34D399); }
+    
+    /* --- Giant Testimonial Text --- */
+    .giant-text-gradient {
+        background: linear-gradient(to bottom, #0A5C5A 0%, #F5A623 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<header class="absolute top-0 w-full z-50 py-6 px-6 lg:px-20 pointer-events-none">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-4 pointer-events-auto">
+            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-[#F5A623] p-1">
+                <img src="/static/images/icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" alt="Vardhan Holidays Logo" class="w-full h-full object-contain">
+            </div>
+            <h1 class="text-2xl font-black text-white tracking-wide drop-shadow-md">
+                Vardhan <span class="text-[#F5A623]">Holidays</span>
+            </h1>
+        </div>
+    </div>
+</header>
+
+<section class="relative min-h-[95vh] flex items-center justify-between overflow-hidden bg-teal-900 pt-24 px-6 lg:px-20">
+    <div class="absolute inset-0 hero-bg-overlay pointer-events-none"></div>
+
+    <div class="absolute left-0 bottom-0 opacity-10 pointer-events-none w-1/3 h-full z-10">
+        <svg viewBox="0 0 100 100" class="w-full h-full text-white" fill="currentColor"><path d="M10,90 L90,90 L80,10 L50,0 L20,10 Z" opacity="0.5"/></svg>
+    </div>
+
+    <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-20">
+        
+        <div class="text-left reveal active mt-16 lg:mt-0">
+            <div id="greeting-badge" class="hidden inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-white/10 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest mb-8 border border-white/20">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                <span id="greeting-text"></span>
+            </div>
+
+            <div class="flex items-center gap-3 mb-4 reveal active drop-shadow-md">
+                <img src="/static/images/icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" class="w-8 h-8 object-contain bg-white rounded-full p-1" alt="Logo">
+                <span class="text-xl font-bold text-white tracking-widest uppercase">Vardhan Holidays</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-6 text-white leading-[1.1] drop-shadow-lg">
+                Experience the <br><span class="text-[#F5A623]">Soul of India</span>
+            </h1>
+            <p class="max-w-xl text-teal-50 text-lg md:text-xl font-medium leading-relaxed mb-10 reveal active reveal-delay-1 drop-shadow-md">
+                We are South India's most trusted travel curators. Handpicked heritage tours, luxury stays, and unforgettable memories tailored just for you.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-start gap-4 reveal active reveal-delay-2">
+                <a href="/explorer" class="px-8 py-4 bg-[#F5A623] text-teal-900 font-bold text-sm rounded-full hover:bg-yellow-400 shadow-[0_0_20px_rgba(245,166,35,0.4)] transform hover:-translate-y-1 transition-all flex items-center gap-3">
+                    Explore Packages <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="/bookings/portal" class="px-8 py-4 bg-transparent text-white border-2 border-white/30 font-bold text-sm rounded-full hover:bg-white/10 transition-all flex items-center gap-3">
+                    <i class="fas fa-ticket-alt text-[#F5A623]"></i> Track My Booking
+                </a>
+            </div>
+            <button onclick="terminateIdentity()" id="terminate-btn" class="hidden mt-6 text-teal-200 hover:text-white transition-all text-xs font-bold underline bg-transparent">
+                Not you? Logout
+            </button>
+        </div>
+
+        <div class="relative w-full h-[500px] lg:h-[600px] flex items-center justify-center reveal active reveal-delay-1 pointer-events-none">
+            <div class="absolute w-[350px] h-[350px] bg-[#F5A623]/30 rounded-full blur-[80px] z-0"></div>
+            
+            <div class="absolute inset-0 z-0 flex items-center justify-center" style="animation: float-clouds 15s linear infinite;">
+                <div class="w-64 h-16 bg-white/10 rounded-full blur-xl absolute top-20 right-10"></div>
+                <div class="w-48 h-12 bg-white/10 rounded-full blur-lg absolute bottom-32 left-10"></div>
+            </div>
+
+            <div class="arch-container z-10 w-[80%] h-[95%] bg-gray-900 pointer-events-auto">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none"></div>
+                
+                <img src="{{ url_for('static', filename='images/temple1.jpg') }}" class="slider-image slide-1" alt="Tamil Nadu Temple Architecture">
+                
+                <img src="{{ url_for('static', filename='images/kerala.jpg') }}" class="slider-image slide-2" alt="Kerala Heritage Temple">
+                
+                <img src="{{ url_for('static', filename='images/waterfalls.jpg') }}" class="slider-image slide-3" alt="Majestic Waterfalls">
+                
+                <div class="absolute bottom-6 right-6 z-20 text-right">
+                    <span class="bg-[#F5A623] text-teal-900 font-bold text-xs uppercase px-3 py-1 rounded-full shadow-lg">Featured Destinations</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="py-5 bg-white flex flex-wrap justify-center gap-8 md:gap-16 text-xs font-bold uppercase tracking-wider text-teal-800 relative z-20 shadow-sm border-b border-gray-100">
+    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500 text-lg"></i> Premium Curated Tours</div>
+    <div class="flex items-center gap-2"><i class="fas fa-shield-alt text-blue-500 text-lg"></i> 100% Secure Bookings</div>
+    <div class="flex items-center gap-2"><i class="fas fa-headset text-[#F5A623] text-lg"></i> 24/7 AI Concierge</div>
+</div>
+
+<section class="py-24 bg-white bg-dotted-map relative z-10 overflow-hidden">
+    <div class="container mx-auto px-6 max-w-7xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <div class="reveal">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">
+                    Vardhan Holidays <br><span class="text-[#0D7073]">Welcomes You!</span>
+                </h2>
+                <p class="text-gray-600 leading-relaxed mb-6 font-medium">
+                    We are a quality travel agency and tour company operating across South India. Run by a group of knowledgeable professionals who can answer all your queries about tours, heritage walks, and luxury packages as per your distinct requirements.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-8">
+                    We bring you comprehensive Tour Packages for Kerala, Andhra & Telangana, Karnataka, and Tamil Nadu, including destinations such as Rameswaram, Munnar, Ooty, Kanyakumari, and many more!
+                </p>
+                <a href="{{ url_for('about_page') }}" class="text-black font-bold text-sm uppercase tracking-wide hover:text-[#0D7073] transition-colors flex items-center gap-2">
+                    Read More <i class="fas fa-arrow-right transform -rotate-45"></i>
+                </a>
+            </div>
+
+            <div class="relative h-[500px] reveal reveal-delay-1">
+                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" alt="Luxury Stays" class="absolute left-0 top-10 w-[55%] h-[60%] object-cover rounded-3xl shadow-2xl z-20 border-4 border-white transform hover:scale-105 transition-transform duration-500">
+                
+                <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80" alt="Guided Tours" class="absolute right-0 top-0 w-[50%] h-[50%] object-cover rounded-3xl shadow-xl z-10 border-4 border-white transform hover:scale-105 transition-transform duration-500">
+                
+                <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80" alt="Premium Transport" class="absolute right-10 bottom-0 w-[60%] h-[45%] object-cover rounded-3xl shadow-[0_30px_60px_rgba(0,0,0,0.2)] z-30 border-4 border-white transform hover:scale-105 transition-transform duration-500">
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="py-24 bg-[#0A5C5A] relative z-20 text-white shadow-2xl">
+    <div class="container mx-auto px-6 max-w-7xl">
+        <div class="text-center mb-20 reveal">
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-4 drop-shadow-md">
+                We offer <span class="text-[#F5A623]">Best Services</span>
+            </h2>
+            <p class="text-teal-100 font-medium max-w-3xl mx-auto text-base md:text-lg leading-relaxed">
+                We offer a diverse fleet of vehicles, handpicked luxury stays, and experienced guides for local sightseeing, heritage exploration, and curated cultural transfers.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 lg:px-6">
+            <div class="service-card card-blue p-10 text-center reveal text-gray-800 transform md:-translate-y-8">
+                <div class="w-24 h-24 mx-auto bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-4xl mb-8 shadow-inner border-4 border-white">
+                    <i class="fas fa-route"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold mb-4 text-gray-900">Plan Your Trip</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-6 font-medium">
+                    We help our clients make the best decisions about travel arrangements. We suggest top destinations and efficient methods of transportation.
+                </p>
+                <div class="absolute bottom-4 left-6 text-white font-black text-3xl z-10 opacity-90 drop-shadow-md">01</div>
+            </div>
+            
+            <div class="service-card card-yellow p-10 text-center reveal reveal-delay-1 text-gray-800">
+                <div class="w-24 h-24 mx-auto bg-yellow-50 text-[#F5A623] rounded-full flex items-center justify-center text-4xl mb-8 shadow-inner border-4 border-white">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold mb-4 text-gray-900">Book With Us</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-6 font-medium">
+                    Select your destinations and let us manage the logistics. We ensure a safe, secure, and completely stress-free booking experience.
+                </p>
+                <div class="absolute bottom-4 left-6 text-white font-black text-3xl z-10 opacity-90 drop-shadow-md">02</div>
+            </div>
+            
+            <div class="service-card card-green p-10 text-center reveal reveal-delay-2 text-gray-800 transform md:translate-y-8">
+                <div class="w-24 h-24 mx-auto bg-green-50 text-green-500 rounded-full flex items-center justify-center text-4xl mb-8 shadow-inner border-4 border-white">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold mb-4 text-gray-900">Enjoy Your Trip</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-6 font-medium">
+                    We transform ordinary trips into extraordinary ones. As your personal guide, we turn unique experiences into unforgettable memories.
+                </p>
+                <div class="absolute bottom-4 left-6 text-white font-black text-3xl z-10 opacity-90 drop-shadow-md">03</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-24 bg-wavy-pattern relative z-10 border-t border-gray-200">
+    <div class="container mx-auto px-6 max-w-7xl text-center reveal">
+        <span class="inline-block px-6 py-2 bg-white text-gray-900 font-bold text-sm rounded-full shadow-sm border border-gray-200 mb-8">
+            Best Travel Agency Ever!
+        </span>
+        <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight mb-6">
+            Trending destination in South India
+        </h2>
+        <p class="text-gray-500 font-medium max-w-2xl mx-auto text-lg mb-12">
+            A curated list of the most popular travel packages based on different destinations across the cultural heart of the peninsula.
+        </p>
+
+        <div class="bg-white rounded-[2rem] shadow-xl border border-gray-100 overflow-hidden flex flex-col md:flex-row items-center text-left max-w-5xl mx-auto transform hover:-translate-y-2 transition-all duration-300">
+            <div class="w-full md:w-1/2">
+                <img src="https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80" class="w-full h-[300px] md:h-[400px] object-cover" alt="Trending Destination">
+            </div>
+            <div class="w-full md:w-1/2 p-10">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-[#F5A623] font-bold text-xs uppercase tracking-widest">Signature Package</span>
+                </div>
+                <h3 class="text-3xl font-extrabold text-gray-900 mb-4">The Imperial Chola Trail</h3>
+                <p class="text-gray-600 mb-8 leading-relaxed">
+                    Walk through the towering granite temples of Thanjavur. Fully-managed luxury stays, expert local guides, and exclusive heritage access.
+                </p>
+                <div class="flex items-center gap-6">
+                    <a href="/explorer?dynasty=Chola" class="px-8 py-3 bg-[#0D7073] text-white font-bold rounded-full hover:bg-[#0A5C5A] transition-colors">
+                        View Itinerary
+                    </a>
+                    <div class="font-black text-2xl text-gray-900">$299<span class="text-sm text-gray-400 font-normal">/person</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-32 bg-white relative overflow-hidden">
+    <div class="container mx-auto px-6 text-center z-10 relative">
+        <h3 class="text-3xl font-extrabold text-gray-900 mb-2 reveal">Our Client Says!</h3>
+        <p class="text-gray-500 mb-16 reveal reveal-delay-1">Destinations worth exploring! Here are a few popular spots</p>
+        
+        <div class="relative flex items-center justify-center reveal reveal-delay-2 h-48 md:h-64 my-10">
+            <div class="absolute w-full h-full pointer-events-none top-0 z-20">
+                <svg width="100%" height="100%" class="absolute opacity-20"><path d="M50,150 Q200,50 400,100 T800,50 T1200,150" fill="none" stroke="#0D7073" stroke-width="2" stroke-dasharray="10 10"/></svg>
+                <div class="absolute left-1/2 top-10 text-4xl text-[#0D7073]" style="animation: drive-car 8s linear infinite;">
+                    <i class="fas fa-car-side"></i>
+                </div>
+            </div>
+            
+            <h2 class="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-widest giant-text-gradient absolute z-10 w-full text-center select-none">
+                TESTIMONIAL
+            </h2>
+        </div>
+
+        <div class="flex justify-center gap-2 mb-8 relative z-20">
+            <span class="w-3 h-3 rounded-full bg-[#10B981]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#10B981]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#10B981]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#10B981]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#10B981]"></span>
+        </div>
+
+        <p class="max-w-2xl mx-auto text-lg md:text-xl text-[#0A5C5A] font-semibold leading-relaxed relative z-20">
+            Excellent service, Driver is very polite and nice. I booked it for 2 days, Madurai trip for one day and next day Madurai to Rameshwaram trip. Thank You so much to make it memorable for us.
+        </p>
+    </div>
+</section>
+
+<section class="py-24 relative flex items-center justify-center overflow-hidden bg-gray-900">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-[#0D7073]/40 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#F5A623]/20 rounded-full blur-[100px] pointer-events-none"></div>
+    
+    <div class="container mx-auto px-6 relative z-10 text-center reveal">
+        
+        <div class="w-24 h-24 bg-white rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl relative border-4 border-gray-800 transform hover:scale-105 transition-transform cursor-pointer">
+            <span class="absolute top-0 right-0 bg-green-500 text-white text-[9px] font-bold uppercase px-2 py-0.5 rounded-full border-2 border-white animate-pulse shadow-sm">Online</span>
+            <img src="/static/images/icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" alt="Vardhan Assistant" class="w-12 h-12 object-contain">
+        </div>
+        
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+            Meet <span class="text-[#F5A623]">Vardhan Assistant</span>
+        </h2>
+        
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+            Forget boring travel brochures. Our dedicated AI travel concierge knows the history of the monuments, the exact budget for your trip, and exactly where to find the best local cuisine. <br><br>
+            <span class="inline-block mt-2 px-4 py-1.5 bg-gray-800 text-white text-[10px] rounded-full font-bold tracking-widest uppercase border border-gray-700">Free Planning & Advice</span>
+        </p>
+        
+        <a href="/chatbot-ui" class="inline-flex items-center gap-3 px-10 py-5 bg-[#0D7073] text-white font-bold text-sm rounded-full hover:bg-[#0A5C5A] transition-all shadow-lg hover:shadow-teal-900/50">
+            <i class="fas fa-comment-dots text-lg"></i>
+            <span>Chat with Assistant</span>
+        </a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Identity Management
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedName = localStorage.getItem('inkwake_username');
+        const terminateBtn = document.getElementById('terminate-btn');
+        const greetingBadge = document.getElementById('greeting-badge');
+        const greetingText = document.getElementById('greeting-text');
+        
+        if (savedName) {
+            if(terminateBtn) terminateBtn.classList.remove('hidden');
+            if(greetingBadge && greetingText) {
+                greetingText.innerText = `Namaste, ${savedName}`;
+                greetingBadge.classList.remove('hidden');
+                greetingBadge.classList.add('inline-flex'); 
+            }
+        }
+    });
+
+    function terminateIdentity() {
+        if (confirm("Logout from current traveler session?")) {
+            localStorage.removeItem('inkwake_username');
+            window.location.reload();
+        }
+    }
+
+    // Intersection Observer for Scroll Animations (.reveal)
+    document.addEventListener("DOMContentLoaded", function() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(el => observer.observe(el));
+    });
+</script>
+{% endblock %}

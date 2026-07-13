@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Rate Your Trip | Vardhan Holidays India{% endblock %}
+
+{% block extra_head %}
+<link rel="icon" type="image/png" href="/static/images/icon.png">
+<link rel="apple-touch-icon" href="/static/images/icon.png">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); 
+        color: #334155; 
+    }
+
+    .review-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
+    }
+
+    .custom-textarea {
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        color: #1e293b;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .custom-textarea:focus {
+        border-color: #f97316;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+    }
+
+    /* CSS Trick to make previous stars light up when hovering over a higher star */
+    #star-container label { transition: color 0.2s ease; }
+    #star-container label:hover,
+    #star-container label:hover ~ label,
+    #star-container input:checked ~ label {
+        color: #f97316; /* Tailwind Orange 500 */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center py-12 px-4">
+    <div class="w-full max-w-lg review-card rounded-[2rem] p-8 md:p-10 text-center relative overflow-hidden">
+        
+        <div class="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none"></div>
+
+        <img src="/static/images/logo.png" alt="Vardhan Holidays India" class="h-10 object-contain mx-auto mb-8 relative z-10">
+        
+        <h1 class="text-2xl font-bold text-slate-800 mb-2 relative z-10">Rate Your Journey</h1>
+        <p class="text-slate-500 font-medium mb-8 relative z-10">How was your experience at <b class="text-slate-700">{{ booking.site_name }}</b>?</p>
+
+        <form action="/bookings/submit-review" method="POST" class="relative z-10">
+            <input type="hidden" name="booking_ref" value="{{ booking.booking_ref }}">
+            <input type="hidden" name="site_id" value="{{ booking.site_id }}">
+            <input type="hidden" name="traveler_name" value="{{ booking.traveler_name }}">
+            
+            <div class="flex justify-center gap-3 mb-8 flex-row-reverse" id="star-container">
+                <input type="radio" name="rating" id="star5" value="5" class="hidden peer" required>
+                <label for="star5" class="cursor-pointer text-4xl text-slate-200 drop-shadow-sm"><i class="fas fa-star"></i></label>
+                
+                <input type="radio" name="rating" id="star4" value="4" class="hidden peer">
+                <label for="star4" class="cursor-pointer text-4xl text-slate-200 drop-shadow-sm"><i class="fas fa-star"></i></label>
+                
+                <input type="radio" name="rating" id="star3" value="3" class="hidden peer">
+                <label for="star3" class="cursor-pointer text-4xl text-slate-200 drop-shadow-sm"><i class="fas fa-star"></i></label>
+                
+                <input type="radio" name="rating" id="star2" value="2" class="hidden peer">
+                <label for="star2" class="cursor-pointer text-4xl text-slate-200 drop-shadow-sm"><i class="fas fa-star"></i></label>
+                
+                <input type="radio" name="rating" id="star1" value="1" class="hidden peer">
+                <label for="star1" class="cursor-pointer text-4xl text-slate-200 drop-shadow-sm"><i class="fas fa-star"></i></label>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-left text-xs font-semibold uppercase text-slate-500 mb-2 ml-1">Share your thoughts</label>
+                <textarea name="comment" rows="4" required placeholder="What was the highlight of your trip? How was your guide?" class="custom-textarea resize-none"></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-4 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-orange-500/30 flex items-center justify-center gap-2">
+                Submit Feedback <i class="fas fa-paper-plane text-xs"></i>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

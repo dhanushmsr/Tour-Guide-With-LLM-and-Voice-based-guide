@@ -1,0 +1,11 @@
+# Environments
+venv/
+env/
+__pycache__/
+
+# Secrets and Configs
+.env
+
+# Local Databases & Media
+app/data/*.db
+static/audio/*.mp3

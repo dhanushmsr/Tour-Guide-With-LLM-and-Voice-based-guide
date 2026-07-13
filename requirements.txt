@@ -1,0 +1,7 @@
+flask
+sqlalchemy
+pymysql
+cryptography
+python-dotenv
+google-genai
+edge-tts

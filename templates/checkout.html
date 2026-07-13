@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Your Booking | Vardhan Holidays India{% endblock %}
+
+{% block extra_head %}
+<link rel="icon" type="image/png" href="/static/images/icon.png">
+<link rel="apple-touch-icon" href="/static/images/icon.png">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); 
+        color: #334155; 
+    }
+    
+    .checkout-card { 
+        background: #ffffff; 
+        border: 1px solid #e2e8f0; 
+        border-radius: 1.5rem; 
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); 
+    }
+    
+    .custom-input { 
+        width: 100%; 
+        background: #ffffff; 
+        border: 1px solid #cbd5e1; 
+        padding: 0.875rem 1.25rem; 
+        border-radius: 0.75rem; 
+        color: #1e293b; 
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); 
+        transition: all 0.3s ease; 
+        font-size: 0.95rem;
+    }
+    
+    .custom-input:focus { 
+        border-color: #f97316; 
+        outline: none; 
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); 
+    }
+    
+    .custom-input::placeholder { 
+        color: #94a3b8; 
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-12 max-w-6xl">
+    
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div class="flex items-center gap-4">
+            <a href="/site/{{ site.id }}" class="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-orange-600 hover:border-orange-200 transition-all shadow-sm">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">Complete Your Booking</h1>
+                <p class="text-sm text-slate-500 font-medium mt-1"><i class="fas fa-lock text-green-500 mr-1"></i> Secure 256-bit Encrypted Checkout</p>
+            </div>
+        </div>
+        <img src="/static/images/logo.png" alt="Vardhan Holidays India" class="h-10 object-contain hidden md:block">
+    </div>
+
+    <form id="checkoutForm" action="/bookings/process-payment" method="POST" class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <input type="hidden" name="site_id" value="{{ site.id }}">
+        <input type="hidden" name="site_name" value="{{ site.name }}">
+        <input type="hidden" name="trip_days" value="{{ site.trip_days }}">
+        <input type="hidden" name="price_per_person" id="basePrice" value="{{ site.discounted_price }}">
+        <input type="hidden" name="travelers_json" id="travelersJson">
+
+        <div class="lg:col-span-3 space-y-6">
+            
+            <div class="checkout-card p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none"></div>
+                <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-3 relative z-10">
+                    <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600"><i class="fas fa-user"></i></div>
+                    Primary Traveler Details
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 relative z-10">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Full Name</label>
+                        <input type="text" name="traveler_name" id="leadName" required class="custom-input" placeholder="John Doe">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Country</label>
+                        <input type="text" id="leadCountry" required class="custom-input" placeholder="USA, UK, India...">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Mobile Number</label>
+                        <input type="tel" name="phone" required class="custom-input" placeholder="+1 234 567 8900">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Email Address</label>
+                        <input type="email" name="email" required class="custom-input" placeholder="john@example.com">
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400 mt-4"><i class="fas fa-info-circle mr-1 text-blue-400"></i> Your tickets and portal login will be sent to this email and mobile number.</p>
+            </div>
+
+            <div class="checkout-card p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl pointer-events-none"></div>
+                <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-3 relative z-10">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600"><i class="fas fa-calendar-alt"></i></div>
+                    Trip Details
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-2 relative z-10">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Journey Start Date</label>
+                        <input type="date" name="travel_date" id="travelDate" required class="custom-input text-slate-600">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Number of Travelers</label>
+                        <input type="number" name="travelers_count" id="travelerCount" min="1" max="10" value="1" required class="custom-input" oninput="updateTravelerFields()">
+                    </div>
+                </div>
+                
+                <div id="additional-travelers" class="space-y-3 mt-4 relative z-10"></div>
+            </div>
+
+            <div class="checkout-card p-8 border-t-4 border-t-green-500 relative overflow-hidden">
+                <h2 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-3 relative z-10">
+                    <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-credit-card"></i></div>
+                    Payment Information
+                </h2>
+                <p class="text-sm text-slate-500 mb-6 relative z-10">All transactions are secure and encrypted.</p>
+                
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6 relative z-10">
+                    <p class="text-xs text-slate-600 font-medium"><i class="fas fa-flask text-amber-500 mr-2"></i><strong>Testing Note:</strong> To test a failed payment, use a card number ending in <strong>0000</strong>.</p>
+                </div>
+
+                <div class="space-y-5 relative z-10">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Card Number</label>
+                        <div class="relative">
+                            <i class="far fa-credit-card absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" name="card_number" required maxlength="16" class="custom-input font-mono tracking-widest pl-10" placeholder="1234 5678 9101 1121">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-5">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" required class="custom-input text-center">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-500 uppercase ml-1">Security Code (CVV)</label>
+                            <input type="password" maxlength="3" required class="custom-input text-center" placeholder="•••">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2">
+            <div class="checkout-card p-6 md:p-8 sticky top-24">
+                <h2 class="text-lg font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Order Summary</h2>
+                
+                <img src="{{ site.image_url }}" class="w-full h-48 object-cover rounded-xl mb-5 shadow-sm border border-slate-100">
+                
+                <h3 class="text-xl font-bold text-slate-800 mb-1">{{ site.name }}</h3>
+                <p class="text-sm text-slate-500 font-medium mb-6"><i class="fas fa-map-marker-alt text-orange-500 mr-1.5"></i> {{ site.district }} • {{ site.trip_days }} Days Trip</p>
+                
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-100 mb-6 space-y-3">
+                    <div class="flex justify-between text-sm"><span class="text-slate-500 font-medium">Price per person</span><span class="font-bold text-slate-700">${{ site.discounted_price }}</span></div>
+                    <div class="flex justify-between text-sm"><span class="text-slate-500 font-medium">Total Travelers</span><span class="font-bold text-slate-700" id="summaryCount">1</span></div>
+                </div>
+
+                <div class="mb-8">
+                    <label class="text-xs font-semibold text-slate-500 uppercase block mb-3">Have a discount coupon?</label>
+                    
+                    {% if promo_codes %}
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {% for promo in promo_codes %}
+                                <button type="button" onclick="autoFillPromo('{{ promo.code }}')" class="px-3 py-1.5 bg-white border border-slate-200 hover:border-orange-300 hover:bg-orange-50 text-slate-600 rounded-lg text-xs font-bold transition-all shadow-sm">
+                                    <i class="fas fa-tag text-orange-500 mr-1"></i> {{ promo.code }} <span class="text-green-600 ml-1">-{{ promo.discount_percentage }}%</span>
+                                </button>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="flex gap-2">
+                        <input type="text" id="promoInput" name="promo_code" class="custom-input uppercase" placeholder="Enter Code">
+                        <button type="button" onclick="applyPromo()" class="bg-slate-800 hover:bg-slate-700 text-white px-5 rounded-lg font-bold text-sm transition-all shadow-sm">Apply</button>
+                    </div>
+                    <p id="promoMessage" class="text-xs font-bold mt-2 text-green-600 hidden"><i class="fas fa-check-circle mr-1"></i> Coupon Applied successfully!</p>
+                </div>
+                
+                <div class="flex justify-between items-end mb-6 border-t border-slate-200 pt-6">
+                    <div>
+                        <span class="text-sm font-bold text-slate-500 block">Total Amount</span>
+                        <span class="text-xs text-slate-400">Including all taxes</span>
+                    </div>
+                    <span class="text-4xl font-black text-orange-600 tracking-tight" id="totalPriceDisplay">${{ site.discounted_price }}</span>
+                </div>
+
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-4 rounded-xl font-bold text-base transition-all shadow-lg hover:shadow-orange-500/30 flex items-center justify-center gap-2">
+                    <i class="fas fa-lock"></i> Pay <span id="btnPriceDisplay">${{ site.discounted_price }}</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    let currentDiscount = 0;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Strict Date Constraints: Only Today up to +6 Months
+        const dateInput = document.getElementById('travelDate');
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setMonth(today.getMonth() + 6);
+        
+        dateInput.min = today.toISOString().split('T')[0];
+        dateInput.max = maxDate.toISOString().split('T')[0];
+    });
+
+    function autoFillPromo(code) {
+        document.getElementById('promoInput').value = code;
+        applyPromo();
+    }
+
+    async function applyPromo() {
+        const code = document.getElementById('promoInput').value.trim();
+        if(!code) return;
+        
+        try {
+            const res = await fetch(`/bookings/validate-promo/${code}`);
+            const data = await res.json();
+            const msg = document.getElementById('promoMessage');
+            
+            if(data.valid) {
+                currentDiscount = data.discount;
+                msg.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Excellent! ${currentDiscount}% discount applied.`;
+                msg.className = "text-xs font-bold mt-3 text-green-600 block";
+                updateTravelerFields(); 
+            } else {
+                currentDiscount = 0;
+                msg.innerHTML = `<i class="fas fa-times-circle mr-1"></i> Invalid or expired coupon code.`;
+                msg.className = "text-xs font-bold mt-3 text-red-600 block";
+                updateTravelerFields(); 
+            }
+        } catch (error) {
+            console.error("Promo validation failed:", error);
+        }
+    }
+
+    function updateTravelerFields() {
+        const basePrice = parseFloat(document.getElementById('basePrice').value);
+        let count = parseInt(document.getElementById('travelerCount').value);
+        if (isNaN(count) || count < 1) count = 1;
+        if (count > 10) count = 10; 
+        
+        // Calculate Base Total
+        let total = basePrice * count;
+        
+        // Apply Promo Discount
+        if (currentDiscount > 0) {
+            total = total - (total * (currentDiscount / 100));
+        }
+
+        total = total.toFixed(2);
+        
+        // Update UI Prices
+        document.getElementById('summaryCount').innerText = count;
+        document.getElementById('totalPriceDisplay').innerText = "$" + total;
+        document.getElementById('btnPriceDisplay').innerText = "$" + total;
+
+        // Generate dynamic passenger fields cleanly
+        const container = document.getElementById('additional-travelers');
+        container.innerHTML = '';
+        for(let i = 2; i <= count; i++) {
+            container.innerHTML += `
+                <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 mt-3 shadow-sm">
+                    <h4 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-wider">Passenger ${i}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" class="custom-input pax-name" placeholder="Full Name" required>
+                        <input type="text" class="custom-input pax-country" placeholder="Country" required>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Package the manifest into JSON before submission
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        const names = document.querySelectorAll('.pax-name');
+        const countries = document.querySelectorAll('.pax-country');
+        
+        const travelers = [{
+            name: document.getElementById('leadName').value, 
+            country: document.getElementById('leadCountry').value
+        }];
+        
+        for(let i = 0; i < names.length; i++){
+            travelers.push({name: names[i].value, country: countries[i].value});
+        }
+        
+        document.getElementById('travelersJson').value = JSON.stringify(travelers);
+    });
+</script>
+{% endblock %}

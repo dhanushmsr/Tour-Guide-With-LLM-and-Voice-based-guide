@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}{{ site.name }} | Vardhan Holidays India{% endblock %}
+
+{% block extra_head %}
+<link rel="icon" type="image/png" href="/static/images/icon.png">
+<link rel="apple-touch-icon" href="/static/images/icon.png">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background: #f8fafc; 
+        color: #334155; 
+        overflow-x: hidden;
+    }
+
+    .gallery-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
+    .gallery-container::-webkit-scrollbar { display: none; }
+    .gallery-item { min-width: 100%; height: 85vh; min-height: 600px; scroll-snap-align: center; position: relative; overflow: hidden; background-color: #0f172a; }
+    
+    .light-card { 
+        background: #ffffff; 
+        border: 1px solid #e2e8f0; 
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); 
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .light-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -10px rgba(249, 115, 22, 0.1);
+    }
+    
+    #itineraryMap { height: 400px; width: 100%; border-radius: 1.5rem; z-index: 10; border: 1px solid #e2e8f0; }
+    .custom-leaflet-marker { background: transparent; border: none; }
+    
+    .loading-pulse { animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .content-shadow { text-shadow: 0 2px 15px rgba(0,0,0,0.7); }
+    
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Scroll Reveal System */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.2s; }
+    
+    /* The Walking Traveler Animation */
+    @keyframes walk-journey {
+        0% { transform: translateX(-10vw); opacity: 0; }
+        5% { opacity: 0.3; }
+        95% { opacity: 0.3; }
+        100% { transform: translateX(110vw); opacity: 0; }
+    }
+    .traveler-anim {
+        position: absolute;
+        bottom: 12%;
+        left: 0;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 3.5rem;
+        animation: walk-journey 25s linear infinite;
+        z-index: 15;
+        pointer-events: none;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="relative w-full overflow-hidden bg-slate-900 shadow-xl -mt-24 md:-mt-28">
+    
+    <i class="fas fa-hiking traveler-anim"></i>
+
+    <div class="gallery-container" id="auto-gallery">
+        <div class="gallery-item">
+            <img src="{{ site.image_url }}" class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none" alt="">
+            <img src="{{ site.image_url }}" alt="{{ site.name }}" class="relative z-10 w-full h-full object-contain">
+            <div class="absolute inset-0 z-20 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent opacity-90 pointer-events-none"></div>
+        </div>
+        
+        {% if site.gallery %}
+            {% for img in site.gallery %}
+            <div class="gallery-item">
+                <img src="{{ img }}" class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none" alt="">
+                <img src="{{ img }}" alt="Heritage Detail" class="relative z-10 w-full h-full object-contain" loading="lazy">
+                <div class="absolute inset-0 z-20 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent opacity-90 pointer-events-none"></div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div class="absolute bottom-20 left-0 right-0 px-6 text-center z-30 pointer-events-none">
+        <span class="bg-orange-600 px-5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 inline-block text-white shadow-md transform hover:scale-105 transition-transform cursor-default">{{ site.category }} Era</span>
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-white content-shadow">{{ site.name }}</h1>
+        <p class="text-orange-400 text-lg md:text-xl font-semibold uppercase tracking-wider content-shadow">
+            <i class="fas fa-map-marker-alt mr-1.5"></i> {{ site.district }}, Tamil Nadu
+        </p>
+        {% if site.gallery %}
+        <div class="mt-8 text-white/70 text-[10px] font-bold uppercase tracking-widest animate-pulse">
+            <i class="fas fa-chevron-left mr-2"></i> Auto-Sliding Gallery <i class="fas fa-chevron-right ml-2"></i>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<div class="container mx-auto px-6 -mt-12 relative z-40 pb-24 max-w-7xl">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        <div class="lg:col-span-2 space-y-10">
+            
+            <div class="light-card p-8 md:p-12 rounded-[2rem] shadow-sm reveal">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-slate-800 border-b-4 border-orange-500/30 pb-2">Tour Overview</h2>
+                    <div class="flex gap-3">
+                        <button onclick="playVoice(this, '{{ site.history_text|e }}', 'ta')" class="px-5 py-2.5 bg-slate-50 hover:bg-orange-50 border border-slate-200 hover:border-orange-200 rounded-xl transition-all flex items-center gap-2 group shadow-sm transform hover:-translate-y-1">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-600 group-hover:text-orange-600">தமிழ்</span> 
+                            <i class="fas fa-volume-up text-slate-400 group-hover:text-orange-500 transition-colors"></i>
+                        </button>
+                        <button onclick="playVoice(this, '{{ site.history_text|e }}', 'en')" class="px-5 py-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 rounded-xl transition-all flex items-center gap-2 group shadow-sm transform hover:-translate-y-1">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-600 group-hover:text-blue-600">EN</span> 
+                            <i class="fas fa-volume-up text-slate-400 group-hover:text-blue-500 transition-colors"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <p class="text-slate-600 leading-relaxed text-lg mb-10 font-medium border-l-4 border-orange-500 pl-6">{{ site.history_text }}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 pt-10 border-t border-slate-100">
+                    <div>
+                        <h3 class="text-orange-600 font-bold uppercase text-xs tracking-wider mb-3">Key Highlights</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">Experience unique architecture from the {{ site.category }} era. Features mathematically aligned structures and brilliant ancient engineering.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-orange-600 font-bold uppercase text-xs tracking-wider mb-3">Cultural Significance</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">{{ site.culture }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if site.trip_days or site.discounted_price %}
+            <div class="light-card p-8 md:p-12 rounded-[2rem] shadow-sm relative overflow-hidden border-t-4 border-t-orange-500 reveal reveal-delay-1">
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-orange-50 rounded-full blur-3xl pointer-events-none"></div>
+
+                <h3 class="text-xl font-bold mb-8 text-slate-800 flex items-center gap-3 relative z-10">
+                    <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600"><i class="fas fa-ticket-alt"></i></div>
+                    Package Details & Pricing
+                </h3>
+                
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6 relative z-10 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                    <div class="flex flex-col gap-1 w-full md:w-auto text-center md:text-left">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Duration</span>
+                        <div class="flex items-center justify-center md:justify-start gap-2 text-xl font-bold text-slate-800">
+                            <i class="far fa-calendar-alt text-blue-500 text-base"></i> {{ site.trip_days }} Days
+                        </div>
+                    </div>
+                    
+                    <div class="w-px h-12 bg-slate-200 hidden md:block"></div>
+                    
+                    <div class="flex flex-col items-center md:items-end gap-1 text-center md:text-right w-full md:w-auto">
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Package Total</span>
+                        <div class="flex items-end justify-center md:justify-end gap-3 mt-1">
+                            {% if site.original_price %}
+                            <span class="text-lg text-slate-400 line-through font-semibold mb-1">${{ site.original_price }}</span>
+                            {% endif %}
+                            <span class="text-5xl font-black text-orange-600 tracking-tight leading-none">${{ site.discounted_price }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 mb-8 pt-8 border-t border-slate-100 relative z-10">
+                    <div class="flex flex-col items-center text-center gap-2 text-slate-600">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-1 transition-transform transform hover:scale-110"><i class="fas fa-hotel text-orange-500 text-lg"></i></div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest">Premium Stay</span>
+                    </div>
+                    <div class="flex flex-col items-center text-center gap-2 text-slate-600">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-1 transition-transform transform hover:scale-110"><i class="fas fa-utensils text-orange-500 text-lg"></i></div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest">Local Meals</span>
+                    </div>
+                    <div class="flex flex-col items-center text-center gap-2 text-slate-600">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-1 transition-transform transform hover:scale-110"><i class="fas fa-car text-orange-500 text-lg"></i></div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest">AC Transport</span>
+                    </div>
+                    <div class="flex flex-col items-center text-center gap-2 text-slate-600">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mb-1 transition-transform transform hover:scale-110"><i class="fas fa-user-tie text-orange-500 text-lg"></i></div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest">Expert Guide</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-4 relative z-10">
+                    <a href="/bookings/checkout/{{ site.id }}" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs transition-all shadow-md hover:shadow-orange-500/30 text-center flex justify-center items-center gap-2 transform hover:-translate-y-1">
+                        <i class="fas fa-lock"></i> Book & Pay Now
+                    </a>
+                    
+                    <button onclick="setModalSubject('Enquiry: {{ site.name|escape }}'); toggleModal('contactModal')" class="flex-1 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700 py-4 rounded-xl font-bold uppercase tracking-wider text-xs transition-all text-center flex justify-center items-center gap-2 shadow-sm transform hover:-translate-y-1">
+                        <i class="fas fa-question-circle text-orange-500"></i> Request Enquiry
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <div class="space-y-10">
+            <div class="light-card p-6 md:p-8 rounded-[2rem] shadow-sm relative overflow-hidden reveal">
+                <h3 class="text-lg font-bold mb-6 text-slate-800 flex items-center gap-3 relative z-10">
+                    <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600"><i class="fas fa-route"></i></div>
+                    Destination Map
+                </h3>
+                
+                <div id="itineraryMap" class="shadow-inner relative z-10 transition-transform duration-500 hover:scale-[1.02]"></div>
+                
+                <a href="https://www.google.com/maps/search/?api=1&query={{ site.coordinates.lat }},{{ site.coordinates.lng }}" target="_blank" class="block w-full mt-6 bg-slate-800 text-white py-3.5 rounded-xl font-bold uppercase tracking-wider text-[10px] text-center hover:bg-slate-700 transition-all shadow-sm relative z-10 transform hover:-translate-y-1">
+                    <i class="fas fa-external-link-alt mr-2"></i> Open in Google Maps
+                </a>
+            </div>
+
+            <div class="light-card p-8 md:p-10 rounded-[2rem] text-center relative overflow-hidden group shadow-sm border border-slate-200 reveal reveal-delay-1">
+                <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-blue-100 transform group-hover:rotate-12 transition-transform duration-500">
+                    <img src="/static/images/icon.png" alt="AI Concierge" class="w-10 h-10 object-contain">
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-slate-800">AI Concierge</h3>
+                <p class="text-slate-500 font-medium text-sm mb-8 leading-relaxed">Have questions about the itinerary, dress codes, or local history? Ask our AI assistant.</p>
+                <a href="/chatbot-ui" class="inline-block px-8 py-3.5 bg-white border border-slate-200 hover:border-orange-300 hover:text-orange-600 transition-all font-bold text-xs uppercase tracking-wider rounded-xl text-slate-700 shadow-sm transform hover:-translate-y-1">
+                    Open Chat
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="light-card p-8 md:p-12 rounded-[2rem] shadow-sm relative overflow-hidden mt-12 mb-12 reveal">
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-slate-100 pb-8 relative z-10">
+            <div>
+                <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+                    Traveler Reviews
+                </h3>
+                <p class="text-slate-500 font-medium mt-1 text-sm">Verified feedback from past explorers.</p>
+            </div>
+            
+            {% if site.review_count > 0 %}
+            <div class="text-left md:text-right mt-6 md:mt-0 flex items-center md:flex-col gap-4 md:gap-0">
+                <div class="text-4xl font-black text-slate-800 tracking-tight">{{ site.average_rating }} <span class="text-xl text-slate-400 font-bold">/ 5</span></div>
+                <div>
+                    <div class="text-yellow-400 text-sm mt-1">
+                        {% for i in range(5) %}
+                            {% if i < site.average_rating|int %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star text-slate-200"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">Based on {{ site.review_count }} Reviews</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-right mt-6 md:mt-0">
+                <span class="px-4 py-2 bg-slate-50 border border-slate-200 text-slate-500 rounded-lg text-[10px] font-bold uppercase tracking-widest">No Reviews Yet</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide relative z-10">
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="min-w-[300px] md:min-w-[400px] bg-slate-50 border border-slate-100 rounded-2xl p-6 md:p-8 snap-start hover:border-orange-200 transition-all shadow-sm hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="font-bold text-slate-800 text-base">{{ review.traveler_name }}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ review.timestamp }}</p>
+                        </div>
+                        <div class="bg-yellow-50 text-yellow-500 px-2.5 py-1 rounded-md text-xs border border-yellow-100">
+                            {% for i in range(review.rating) %}<i class="fas fa-star"></i>{% endfor %}
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-sm font-medium leading-relaxed italic">"{{ review.comment }}"</p>
+                    <div class="mt-6 pt-4 border-t border-slate-200 flex items-center gap-2">
+                        <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Verified Booking ({{ review.booking_ref[-4:] }})</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="w-full text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-2xl">
+                    <i class="far fa-compass text-3xl text-slate-400 mb-3 block animate-pulse"></i>
+                    <p class="text-slate-600 font-medium text-sm">Be the first to review this journey!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // --- 1. Intersection Observer for Scroll Animations (.reveal) ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(el => observer.observe(el));
+
+        // --- 2. Single Destination Map Logic (FIXED FOR NO GREY SCREEN) ---
+        const baseLat = parseFloat("{{ site.coordinates.lat }}");
+        const baseLng = parseFloat("{{ site.coordinates.lng }}");
+        
+        const map = L.map('itineraryMap', { zoomControl: false, scrollWheelZoom: false }).setView([baseLat, baseLng], 14);
+
+        // Highly reliable Standard OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        const markerHtml = `
+            <div style="background: #ea580c; width: 34px; height: 34px; border-radius: 50%; border: 4px solid #ffffff; box-shadow: 0 6px 12px rgba(234,88,12,0.4); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>`;
+
+        const customIcon = L.divIcon({
+            html: markerHtml,
+            className: 'custom-leaflet-marker',
+            iconSize: [34, 34],
+            iconAnchor: [17, 34], 
+            popupAnchor: [0, -34]
+        });
+
+        L.marker([baseLat, baseLng], {icon: customIcon})
+            .addTo(map)
+            .bindPopup(`
+                <div style="text-align: center; padding: 6px;">
+                    <b style="color: #ea580c; text-transform: uppercase; font-size: 10px; letter-spacing: 1px;">Destination</b><br>
+                    <span style="color: #1e293b; font-weight: bold; font-size: 14px; font-family: 'Inter', sans-serif;">{{ site.name }}</span>
+                </div>
+            `, { closeButton: false }).openPopup();
+
+        // Fix to force the map to calculate its size properly and prevent grey screens
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 300);
+
+        // --- 3. Auto-Sliding Gallery Logic ---
+        const gallery = document.getElementById('auto-gallery');
+        if (gallery && gallery.children.length > 1) {
+            setInterval(() => {
+                const scrollAmount = gallery.clientWidth; 
+                if (gallery.scrollLeft + scrollAmount >= gallery.scrollWidth - 10) {
+                    gallery.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    gallery.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }, 5000); 
+        }
+    });
+
+    // --- 4. Text to Speech / Audio Guide ---
+    async function playVoice(btn, text, lang) {
+        const originalHTML = btn.innerHTML;
+        try {
+            btn.disabled = true;
+            btn.classList.add('loading-pulse');
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin text-slate-500"></i>`;
+            const res = await fetch(`/chatbot/voice-guide?text=${encodeURIComponent(text)}&lang=${lang}`);
+            const data = await res.json();
+            if (data.audio_url) {
+                const audio = new Audio(data.audio_url);
+                audio.onended = () => { btn.disabled = false; btn.classList.remove('loading-pulse'); btn.innerHTML = originalHTML; };
+                await audio.play();
+            }
+        } catch (err) {
+            btn.disabled = false; btn.classList.remove('loading-pulse'); btn.innerHTML = `<i class="fas fa-exclamation-triangle text-red-500"></i>`;
+            setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+        }
+    }
+
+    function setModalSubject(subjectText) {
+        const subjectInput = document.querySelector('#contactModal input[name="subject"]');
+        if (subjectInput) {
+            subjectInput.value = subjectText;
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}About Us | Vardhan Holidays India{% endblock %}
+
+{% block extra_head %}
+<link rel="icon" type="image/png" href="/static/images/icon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Reuse core styles for consistency */
+    .hero-bg-overlay {
+        background: linear-gradient(135deg, rgba(10, 92, 90, 0.95) 0%, rgba(13, 112, 115, 0.9) 100%);
+        z-index: 1;
+    }
+    
+    .bg-dotted-map {
+        background-image: radial-gradient(rgba(13, 112, 115, 0.1) 2px, transparent 2px);
+        background-size: 30px 30px;
+    }
+
+    /* Scroll Reveal System */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.2s; }
+    .reveal-delay-2 { transition-delay: 0.4s; }
+
+    /* Timeline Process Line */
+    .process-line::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: rgba(13, 112, 115, 0.1);
+        z-index: 0;
+    }
+    @media (max-width: 768px) {
+        .process-line::before { left: 24px; transform: none; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<header class="absolute top-0 w-full z-50 py-6 px-6 lg:px-20 pointer-events-none">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-4 pointer-events-auto">
+            <a href="/" class="flex items-center gap-4 hover:opacity-90 transition-opacity">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-[#F5A623] p-1">
+                    <img src="/static/images/icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" alt="Vardhan Holidays Logo" class="w-full h-full object-contain">
+                </div>
+                <h1 class="text-2xl font-black text-white tracking-wide drop-shadow-md">
+                    Vardhan <span class="text-[#F5A623]">Holidays</span>
+                </h1>
+            </a>
+        </div>
+        <div class="pointer-events-auto hidden md:block">
+            <a href="/" class="text-white font-bold hover:text-[#F5A623] transition-colors"><i class="fas fa-arrow-left mr-2"></i> Back to Home</a>
+        </div>
+    </div>
+</header>
+
+<section class="relative pt-40 pb-24 px-6 lg:px-20 overflow-hidden bg-teal-900">
+    <div class="absolute inset-0 hero-bg-overlay pointer-events-none"></div>
+    <div class="absolute inset-0 opacity-20 pointer-events-none">
+        <img src="https://images.unsplash.com/photo-1599320658428-2b81d77a8b41?auto=format&fit=crop&w=1920&q=80" alt="Background" class="w-full h-full object-cover grayscale">
+    </div>
+
+    <div class="container mx-auto relative z-20 text-center reveal active">
+        <span class="text-[#F5A623] font-bold tracking-widest uppercase text-sm mb-4 block">Our Story</span>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-6 text-white drop-shadow-lg">
+            Curators of <br>Cultural Heritage
+        </h1>
+        <p class="max-w-2xl mx-auto text-teal-50 text-lg md:text-xl font-medium leading-relaxed drop-shadow-md">
+            Discover the legacy, the people, and the rigorous processes that make Vardhan Holidays the most trusted name in South Indian travel.
+        </p>
+    </div>
+</section>
+
+<section class="py-24 bg-white bg-dotted-map relative z-10 overflow-hidden">
+    <div class="container mx-auto px-6 max-w-7xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <div class="reveal">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-12 h-1 bg-[#F5A623] rounded-full"></span>
+                    <h3 class="text-[#0D7073] font-bold uppercase tracking-wider text-sm">Who We Are</h3>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">
+                    Redefining the art of <br>South Indian Travel.
+                </h2>
+                <p class="text-gray-600 leading-relaxed mb-6 font-medium text-lg">
+                    Founded with a deep reverence for the architectural and natural wonders of the peninsula, Vardhan Holidays is not just a travel agency—we are cultural storytellers.
+                </p>
+                <p class="text-gray-600 leading-relaxed mb-8">
+                    We specialize in premium, hassle-free journeys across Tamil Nadu, Kerala, Karnataka, and Andhra. From navigating ancient temple corridors to securing luxury houseboats in the backwaters, our deep local roots allow us to open doors that remain closed to ordinary tourists.
+                </p>
+                
+                <div class="grid grid-cols-2 gap-6 mt-10">
+                    <div class="bg-teal-50 p-6 rounded-2xl border border-teal-100">
+                        <div class="text-[#0D7073] font-black text-4xl mb-2">10+</div>
+                        <div class="text-gray-800 font-bold text-sm uppercase">Years Experience</div>
+                    </div>
+                    <div class="bg-yellow-50 p-6 rounded-2xl border border-yellow-100">
+                        <div class="text-[#F5A623] font-black text-4xl mb-2">5k+</div>
+                        <div class="text-gray-800 font-bold text-sm uppercase">Happy Travelers</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 reveal reveal-delay-1">
+                <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=600&q=80" alt="Heritage Site" class="w-full h-[300px] object-cover rounded-3xl shadow-lg transform translate-y-8">
+                <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=600&q=80" alt="Kerala Backwaters" class="w-full h-[300px] object-cover rounded-3xl shadow-lg">
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="py-24 bg-gray-50 relative border-t border-gray-200">
+    <div class="container mx-auto px-6 max-w-7xl">
+        <div class="text-center mb-16 reveal">
+            <h2 class="text-4xl font-black tracking-tight mb-4 text-gray-900">Leadership & Vision</h2>
+            <p class="text-gray-500 font-medium max-w-2xl mx-auto text-lg">Driven by a passion for hospitality and a profound respect for Indian heritage.</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-white rounded-[2rem] shadow-xl border border-gray-100 overflow-hidden flex flex-col md:flex-row reveal reveal-delay-1">
+            <div class="md:w-2/5 h-[400px] md:h-auto relative">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80" alt="Vardhan Holidays Leadership" class="absolute inset-0 w-full h-full object-cover">
+            </div>
+            <div class="md:w-3/5 p-10 md:p-14 flex flex-col justify-center">
+                <i class="fas fa-quote-left text-4xl text-gray-200 mb-6"></i>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Vardhan M.</h3>
+                <p class="text-[#0D7073] font-bold text-sm uppercase tracking-widest mb-6">Founder & Lead Curator</p>
+                <p class="text-gray-600 leading-relaxed font-medium text-lg italic">
+                    "Our goal was never just to book hotel rooms. We wanted to create an ecosystem where travelers feel completely secure while immersing themselves in the profound spirituality and history of South India. Every itinerary we build is a reflection of our own love for this land."
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-24 bg-[#0A5C5A] text-white overflow-hidden relative">
+    <div class="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)]" style="background-size: 40px 40px;"></div>
+    
+    <div class="container mx-auto px-6 max-w-7xl relative z-10">
+        <div class="text-center mb-20 reveal">
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-4 drop-shadow-md">
+                The Vardhan <span class="text-[#F5A623]">Process</span>
+            </h2>
+            <p class="text-teal-100 font-medium max-w-2xl mx-auto text-lg">How we turn a simple inquiry into the journey of a lifetime.</p>
+        </div>
+
+        <div class="relative process-line max-w-5xl mx-auto">
+            
+            <div class="flex flex-col md:flex-row items-center justify-between w-full mb-16 reveal">
+                <div class="w-full md:w-5/12 text-left md:text-right pr-0 md:pr-10 mb-6 md:mb-0 ml-16 md:ml-0">
+                    <h3 class="text-2xl font-bold mb-2 text-white">01. Intelligent Consultation</h3>
+                    <p class="text-teal-100/80 leading-relaxed">We utilize our custom AI Concierge and human experts to understand your budget, pace, and specific heritage interests.</p>
+                </div>
+                <div class="absolute left-6 md:left-1/2 transform md:-translate-x-1/2 w-12 h-12 bg-[#F5A623] rounded-full border-4 border-[#0A5C5A] flex items-center justify-center text-teal-900 shadow-lg z-10">
+                    <i class="fas fa-comments text-lg"></i>
+                </div>
+                <div class="w-full md:w-5/12 pl-0 md:pl-10 hidden md:block"></div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-between w-full mb-16 reveal reveal-delay-1">
+                <div class="w-full md:w-5/12 pr-0 md:pr-10 hidden md:block"></div>
+                <div class="absolute left-6 md:left-1/2 transform md:-translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-[#0A5C5A] flex items-center justify-center text-[#0D7073] shadow-lg z-10">
+                    <i class="fas fa-map-marked-alt text-lg"></i>
+                </div>
+                <div class="w-full md:w-5/12 text-left pl-0 md:pl-10 ml-16 md:ml-0">
+                    <h3 class="text-2xl font-bold mb-2 text-white">02. Tailored Curation</h3>
+                    <p class="text-teal-100/80 leading-relaxed">We secure premium transportation, verify boutique accommodations, and arrange exclusive access to temple guides and local experts.</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-between w-full reveal reveal-delay-2">
+                <div class="w-full md:w-5/12 text-left md:text-right pr-0 md:pr-10 mb-6 md:mb-0 ml-16 md:ml-0">
+                    <h3 class="text-2xl font-bold mb-2 text-white">03. Seamless Execution</h3>
+                    <p class="text-teal-100/80 leading-relaxed">From airport pickup to final departure, our ground team manages every logistical detail so you can focus entirely on the experience.</p>
+                </div>
+                <div class="absolute left-6 md:left-1/2 transform md:-translate-x-1/2 w-12 h-12 bg-green-500 rounded-full border-4 border-[#0A5C5A] flex items-center justify-center text-white shadow-lg z-10">
+                    <i class="fas fa-check-double text-lg"></i>
+                </div>
+                <div class="w-full md:w-5/12 pl-0 md:pl-10 hidden md:block"></div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="py-24 bg-white relative">
+    <div class="container mx-auto px-6 max-w-7xl">
+        <div class="bg-gray-50 rounded-[3rem] p-10 md:p-16 border border-gray-100 shadow-lg reveal">
+            <div class="text-center mb-12">
+                <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-inner">
+                    <i class="fas fa-shield-check"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Your Safety is Paramount</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto font-medium">We adhere to the highest standards of traveler security, ensuring peace of mind for solo travelers, families, and senior citizens.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                    <i class="fas fa-id-card text-3xl text-[#0D7073] mb-4"></i>
+                    <h4 class="font-bold text-gray-900 mb-2">Verified Chauffeurs</h4>
+                    <p class="text-sm text-gray-500">All drivers undergo strict background checks and extensive defensive driving training.</p>
+                </div>
+                <div class="text-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                    <i class="fas fa-headset text-3xl text-[#F5A623] mb-4"></i>
+                    <h4 class="font-bold text-gray-900 mb-2">24/7 Ground Support</h4>
+                    <p class="text-sm text-gray-500">A dedicated tour manager is available around the clock via our helpline for any emergencies.</p>
+                </div>
+                <div class="text-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                    <i class="fas fa-hotel text-3xl text-green-500 mb-4"></i>
+                    <h4 class="font-bold text-gray-900 mb-2">Audited Stays</h4>
+                    <p class="text-sm text-gray-500">We personally inspect our hotel partners for hygiene, security, and ethical hospitality practices.</p>
+                </div>
+                <div class="text-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+                    <i class="fas fa-lock text-3xl text-purple-500 mb-4"></i>
+                    <h4 class="font-bold text-gray-900 mb-2">Secure Transactions</h4>
+                    <p class="text-sm text-gray-500">100% encrypted booking infrastructure and transparent cancellation policies.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-[#F5A623] text-teal-900 text-center relative overflow-hidden">
+    <div class="container mx-auto px-6 relative z-10 reveal">
+        <h2 class="text-4xl md:text-5xl font-black mb-6">Ready to create memories?</h2>
+        <p class="text-lg font-medium mb-10 max-w-xl mx-auto opacity-90">Speak directly with our curators or start planning with our AI Concierge today.</p>
+        <div class="flex justify-center gap-4">
+            <a href="/enquiry" class="px-8 py-4 bg-[#0A5C5A] text-white font-bold rounded-full hover:bg-[#0D7073] shadow-lg transition-transform transform hover:-translate-y-1">
+                Contact Us Now
+            </a>
+            <a href="/explorer" class="px-8 py-4 bg-transparent border-2 border-teal-900 text-teal-900 font-bold rounded-full hover:bg-teal-900 hover:text-[#F5A623] transition-colors">
+                View Packages
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Intersection Observer for Scroll Animations (.reveal)
+    document.addEventListener("DOMContentLoaded", function() {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(el => observer.observe(el));
+    });
+</script>
+{% endblock %}

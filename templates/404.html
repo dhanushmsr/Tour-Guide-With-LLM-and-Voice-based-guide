@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}404 | Destination Not Found - Vardhan Holidays India{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-24 text-center max-w-2xl flex flex-col items-center justify-center min-h-[60vh]">
+    
+    <div class="inline-block mb-8 relative">
+        <i class="fas fa-map-marked-alt text-9xl text-slate-200"></i>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-4xl md:text-5xl font-extrabold text-orange-600 tracking-tight">404</span>
+        </div>
+    </div>
+
+    <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-800 mb-6">
+        Lost Your <span class="text-orange-600">Way?</span>
+    </h1>
+    
+    <p class="text-slate-500 text-base md:text-lg mb-10 leading-relaxed font-medium">
+        The tour page or destination details you are looking for cannot be found. It may have been moved, renamed, or is temporarily unavailable. 
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-md">
+        <a href="/" class="inline-flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-600 px-8 py-4 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all shadow-sm">
+            <i class="fas fa-home"></i> Go to Homepage
+        </a>
+        <a href="/explorer" class="inline-flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-500 text-white px-8 py-4 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-orange-500/30">
+            <i class="fas fa-compass"></i> View Tour Packages
+        </a>
+    </div>
+    
+</div>
+{% endblock %}

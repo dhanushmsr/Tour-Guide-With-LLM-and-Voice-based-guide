@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Vardhan Holidays India</title>
+    
+    <link rel="icon" type="image/png" href="/static/images/icon.png">
+    <link rel="apple-touch-icon" href="/static/images/icon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            /* Soft, premium light gradient */
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #334155; 
+        }
+        
+        .sidebar { 
+            background: #ffffff; 
+            border-right: 1px solid #e2e8f0; 
+        }
+        
+        .admin-card { 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); 
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); 
+            border-color: #cbd5e1;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .table-row-hover:hover td { background: #f8fafc; }
+        
+        /* Modal Animation */
+        .modal-enter { animation: modalFadeIn 0.3s ease-out forwards; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="min-h-screen flex selection:bg-orange-100 selection:text-orange-900">
+
+    <aside class="w-72 sidebar hidden lg:flex flex-col sticky top-0 h-screen z-50">
+        <div class="p-8 pb-6 border-b border-slate-100">
+            <img src="/static/images/icon.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" alt="Vardhan Holidays India" class="h-12 object-contain mb-2">
+            <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider ml-1">Admin Portal</p>
+        </div>
+
+        <nav class="flex-1 mt-6 px-4 space-y-2">
+            <a href="{{ url_for('admin.admin_dashboard') }}" class="flex items-center px-5 py-3.5 bg-orange-50 text-orange-600 rounded-xl border border-orange-100 font-bold transition-all shadow-sm">
+                <i class="fas fa-home mr-3 text-lg"></i> 
+                Dashboard
+            </a>
+            <a href="{{ url_for('admin.add_site_page') }}" class="flex items-center px-5 py-3.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-all">
+                <i class="fas fa-plus-circle mr-3 text-lg text-slate-400"></i> 
+                Add New Package
+            </a>
+            <a href="{{ url_for('explorer.explorer_home') }}" target="_blank" class="flex items-center px-5 py-3.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-medium transition-all">
+                <i class="fas fa-external-link-alt mr-3 text-lg text-slate-400"></i> 
+                View Live Website
+            </a>
+        </nav>
+
+        <div class="p-6 border-t border-slate-100 bg-slate-50/50">
+            <a href="{{ url_for('admin.logout') }}" class="flex items-center justify-center gap-2 bg-white text-red-600 border border-red-100 py-3 rounded-xl font-bold hover:bg-red-50 transition-all shadow-sm">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+        
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-900 tracking-tight">Dashboard Overview</h2>
+                <p class="text-slate-500 mt-1">Manage your tour packages, bookings, and customer inquiries.</p>
+            </div>
+            <div class="flex items-center gap-4 bg-white p-2.5 pr-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Logged In As</p>
+                    <p class="text-sm font-bold text-slate-800">Store Manager</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="admin-card p-6 card-hover relative overflow-hidden group">
+                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-orange-50 rounded-full blur-2xl group-hover:bg-orange-100 transition-all"></div>
+                <div class="flex justify-between items-start mb-2 relative z-10">
+                    <div class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Packages</div>
+                    <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500"><i class="fas fa-map-marked-alt"></i></div>
+                </div>
+                <div class="text-4xl font-bold text-slate-800 relative z-10">{{ sites|length }}</div>
+            </div>
+            
+            <a href="{{ url_for('admin.view_all_users') }}" class="block admin-card p-6 card-hover relative overflow-hidden group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-50 rounded-full blur-2xl group-hover:bg-blue-200 transition-all"></div>
+                <div class="flex justify-between items-start mb-2 relative z-10">
+                    <div class="flex items-center gap-2">
+                        <div class="text-slate-500 text-xs font-bold uppercase tracking-wider">Customers</div>
+                        <i class="fas fa-external-link-alt text-[10px] text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 group-hover:bg-blue-100 transition-colors"><i class="fas fa-users"></i></div>
+                </div>
+                <div class="text-4xl font-bold text-slate-800 relative z-10 group-hover:text-blue-600 transition-colors">{{ registered_users|length if registered_users else 0 }}</div>
+                <p class="text-[10px] text-slate-400 mt-2 absolute bottom-4 group-hover:text-blue-500 transition-colors">Click to manage Identity Vault &rarr;</p>
+            </a>
+            
+            <div class="admin-card p-6 card-hover relative overflow-hidden group">
+                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-green-50 rounded-full blur-2xl group-hover:bg-green-100 transition-all"></div>
+                <div class="flex justify-between items-start mb-2 relative z-10">
+                    <div class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Revenue</div>
+                    <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-500"><i class="fas fa-wallet"></i></div>
+                </div>
+                <div class="text-4xl font-bold text-slate-800 relative z-10" id="kpi-revenue">$0</div>
+            </div>
+        </div>
+
+        <div class="admin-card overflow-hidden mb-10">
+            <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50/50">
+                <div class="flex items-center gap-3">
+                    <h3 class="text-lg font-bold text-slate-800">Bookings & Payments</h3>
+                </div>
+                
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <button onclick="toggleModal('couponModal')" class="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
+                        <i class="fas fa-tags text-orange-500"></i> Coupons
+                    </button>
+
+                    <div class="flex gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                        <button id="btn-active-trips" onclick="switchTab('active')" class="px-4 py-1.5 text-xs font-bold rounded-md transition-all bg-white text-slate-800 shadow-sm border border-slate-200">Active Bookings</button>
+                        <button id="btn-history-trips" onclick="switchTab('history')" class="px-4 py-1.5 text-xs font-bold rounded-md transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 border border-transparent">History</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-4">Booking ID</th>
+                            <th class="px-6 py-4">Customer</th>
+                            <th class="px-6 py-4">Package & Dates</th>
+                            <th class="px-6 py-4">Amount</th>
+                            <th class="px-6 py-4 text-center">Status</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="active-tbody" class="divide-y divide-slate-100">
+                        <tr id="no-active-msg" class="hidden">
+                            <td colspan="6" class="text-center py-10 text-slate-400 text-sm font-medium">No active bookings right now.</td>
+                        </tr>
+
+                        {% for b in bookings %}
+                        <tr class="table-row-hover transition-colors booking-row" 
+                            data-id="{{ b.id }}" 
+                            data-date="{{ b.travel_date }}" 
+                            data-days="{{ b.trip_days }}" 
+                            data-status="{{ b.payment_status }}"
+                            data-amount="{{ b.total_amount }}">
+                            
+                            <td class="px-6 py-4 font-mono font-semibold text-slate-600 text-sm">{{ b.booking_ref }}</td>
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-slate-800">{{ b.traveler_name }}</p>
+                                <p class="text-slate-500 text-xs mt-0.5">{{ b.phone }}</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-slate-800 text-sm">{{ b.site_name }}</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                                        <i class="far fa-calendar text-slate-400 mr-1"></i> {{ b.travel_date }} ({{ b.trip_days }} Days)
+                                    </span>
+                                    <span class="countdown-badge text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100 uppercase tracking-wider">
+                                        {{ b.days_to_start }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-bold text-slate-800">${{ b.total_amount }}</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="status-badge inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                    {{ b.payment_status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button onclick="toggleModal('bookingModal_{{ b.id }}')" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center shadow-sm" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <form action="{{ url_for('admin.archive_booking', booking_id=b.id) }}" method="POST" class="inline archive-form" onsubmit="return confirm('Move this booking to history?')">
+                                        <button type="submit" class="archive-btn w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-orange-600 hover:border-orange-200 transition-all flex items-center justify-center shadow-sm" title="Mark as Completed">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                    <tbody id="history-tbody" class="divide-y divide-slate-100 hidden">
+                        <tr id="no-history-msg" class="hidden">
+                            <td colspan="6" class="text-center py-10 text-slate-400 text-sm font-medium">No completed bookings yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            
+            <div class="admin-card overflow-hidden flex flex-col">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-lg font-bold text-slate-800">Customer Messages</h3>
+                </div>
+                
+                <div class="overflow-x-auto flex-1">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="px-6 py-4">Customer</th>
+                                <th class="px-6 py-4">Message</th>
+                                <th class="px-6 py-4 text-center">Action</th> 
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            {% if enquiries %}
+                                {% for enq in enquiries %}
+                                <tr class="table-row-hover transition-colors">
+                                    <td class="px-6 py-4">
+                                        <p class="font-bold text-slate-800 text-sm">{{ enq.name }}</p>
+                                        <p class="text-slate-500 text-xs mt-0.5">{{ enq.email }}</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-xs font-semibold text-slate-700 mb-1">{{ enq.subject }}</p>
+                                        <p class="text-slate-600 text-sm line-clamp-2">{{ enq.message }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <form action="{{ url_for('admin.resolve_enquiry', id=enq.id) }}" method="POST" onsubmit="return confirm('Mark this message as resolved?')">
+                                            <button type="submit" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:text-green-600 hover:border-green-300 rounded-lg text-xs font-semibold transition-all shadow-sm">
+                                                Done
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3" class="px-6 py-12 text-center text-slate-400">
+                                        <i class="far fa-envelope-open text-3xl mb-3 block opacity-50"></i>
+                                        <span class="text-sm font-medium">No new messages.</span>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="admin-card overflow-hidden flex flex-col">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <h3 class="text-lg font-bold text-slate-800">Tour Packages</h3>
+                    <a href="{{ url_for('admin.add_site_page') }}" class="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-semibold transition-all shadow-sm shadow-orange-500/30 flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Add New
+                    </a>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="px-6 py-4">Package Name</th>
+                                <th class="px-6 py-4">Price</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            {% for site in sites %}
+                            <tr class="table-row-hover transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="{{ site.image_url }}" class="w-10 h-10 rounded-lg object-cover border border-slate-200">
+                                        <div>
+                                            <p class="font-bold text-slate-800 text-sm">{{ site.name }}</p>
+                                            <p class="text-slate-500 text-xs mt-0.5">{{ site.district }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    {% if site.discounted_price %}
+                                        <p class="text-slate-800 font-bold">${{ site.discounted_price }}</p>
+                                        <p class="text-slate-500 text-xs">{{ site.trip_days }} Days</p>
+                                    {% else %}
+                                        <span class="text-slate-400 italic text-sm">Not set</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ url_for('admin.edit_site_page', site_id=site.id) }}" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center shadow-sm" title="Edit"><i class="fas fa-pen text-xs"></i></a>
+                                        <form action="{{ url_for('admin.delete_site', site_id=site.id) }}" method="POST" onsubmit="return confirm('Delete this package permanently?')">
+                                            <button type="submit" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-red-600 hover:border-red-200 transition-all flex items-center justify-center shadow-sm" title="Delete"><i class="fas fa-trash-alt text-xs"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if not sites %}
+                            <tr>
+                                <td colspan="3" class="px-6 py-12 text-center text-slate-400">
+                                    <i class="far fa-map text-3xl mb-3 block opacity-50"></i>
+                                    <span class="text-sm font-medium">No packages created yet.</span>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="couponModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+            <div class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl modal-enter border border-slate-200 flex flex-col max-h-[90vh]">
+                <div class="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center"><i class="fas fa-tags text-orange-500 mr-2"></i> Discount Coupons</h3>
+                    <button onclick="toggleModal('couponModal')" class="text-slate-400 hover:text-slate-700 transition-colors"><i class="fas fa-times text-xl"></i></button>
+                </div>
+                
+                <div class="p-6 overflow-y-auto flex-1">
+                    <form action="{{ url_for('admin.create_promo') }}" method="POST" class="flex flex-col sm:flex-row gap-4 mb-8 bg-slate-50 p-5 rounded-xl border border-slate-200 items-end">
+                        <div class="flex-1 w-full">
+                            <label class="text-xs font-semibold text-slate-500 uppercase block mb-1.5 ml-1">New Code</label>
+                            <input type="text" name="code" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-slate-800 uppercase focus:outline-none focus:border-orange-500 transition-colors" placeholder="e.g. SUMMER20">
+                        </div>
+                        <div class="w-full sm:w-32">
+                            <label class="text-xs font-semibold text-slate-500 uppercase block mb-1.5 ml-1">Discount (%)</label>
+                            <input type="number" name="discount" required min="1" max="100" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-slate-800 focus:outline-none focus:border-orange-500 transition-colors" placeholder="20">
+                        </div>
+                        <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white px-5 rounded-lg font-bold text-sm h-[42px] transition-all w-full sm:w-auto shadow-sm">Add</button>
+                    </form>
+
+                    <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden">
+                        <thead class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="p-4">Code</th>
+                                <th class="p-4">Discount</th>
+                                <th class="p-4 text-center">Status</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 bg-white">
+                            {% if promo_codes %}
+                                {% for promo in promo_codes %}
+                                <tr>
+                                    <td class="p-4 font-mono font-bold text-slate-700">{{ promo.code }}</td>
+                                    <td class="p-4 text-green-600 font-bold">{{ promo.discount_percentage }}%</td>
+                                    <td class="p-4 text-center">
+                                        {% if promo.is_active %}
+                                            <span class="px-2.5 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium border border-green-200">Active</span>
+                                        {% else %}
+                                            <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium border border-slate-200">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="p-4 text-right flex justify-end gap-2">
+                                        <button onclick="openEditPromoModal('{{ promo.id }}', '{{ promo.code }}', '{{ promo.discount_percentage }}', '{{ promo.is_active }}')" class="w-7 h-7 rounded bg-slate-50 text-slate-600 border border-slate-200 hover:bg-white hover:text-blue-600 flex items-center justify-center transition-all"><i class="fas fa-pen text-xs"></i></button>
+                                        <form action="{{ url_for('admin.delete_promo', promo_id=promo.id) }}" method="POST" onsubmit="return confirm('Delete this code?')">
+                                            <button type="submit" class="w-7 h-7 rounded bg-slate-50 text-slate-600 border border-slate-200 hover:bg-white hover:text-red-600 flex items-center justify-center transition-all"><i class="fas fa-trash text-xs"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="4" class="p-6 text-center text-slate-400 text-sm font-medium">No coupons active.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="editPromoModal" class="fixed inset-0 z-[110] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+            <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl modal-enter border border-slate-200">
+                <div class="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50">
+                    <h3 class="text-lg font-bold text-slate-800">Edit Coupon</h3>
+                    <button onclick="toggleModal('editPromoModal')" class="text-slate-400 hover:text-slate-700 transition-colors"><i class="fas fa-times"></i></button>
+                </div>
+                <form id="editPromoForm" method="POST" class="p-6">
+                    <div class="mb-4">
+                        <label class="text-xs font-semibold text-slate-500 uppercase block mb-1.5 ml-1">Code Name</label>
+                        <input type="text" id="editPromoCode" name="code" required class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-slate-800 uppercase focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-xs font-semibold text-slate-500 uppercase block mb-1.5 ml-1">Discount (%)</label>
+                        <input type="number" id="editPromoDiscount" name="discount" required min="1" max="100" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-slate-800 focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div class="mb-6">
+                        <label class="text-xs font-semibold text-slate-500 uppercase block mb-1.5 ml-1">Status</label>
+                        <select id="editPromoActive" name="is_active" class="w-full bg-white border border-slate-200 rounded-lg p-2.5 text-slate-800 focus:outline-none focus:border-orange-500">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        {% for b in bookings %}
+        <div id="bookingModal_{{ b.id }}" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+            <div class="bg-white rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl modal-enter border border-slate-200">
+                <div class="flex justify-between items-center p-6 border-b border-slate-100 bg-slate-50">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Booking Details</h3>
+                        <p class="text-xs text-slate-500 font-mono mt-0.5">ID: {{ b.booking_ref }}</p>
+                    </div>
+                    <button onclick="toggleModal('bookingModal_{{ b.id }}')" class="text-slate-400 hover:text-slate-700 transition-colors w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-6 max-h-[70vh] overflow-y-auto">
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Customer Info</p>
+                            <p class="font-bold text-slate-800">{{ b.traveler_name }}</p>
+                            <p class="text-sm text-slate-600">{{ b.phone }}</p>
+                            <p class="text-sm text-slate-600">{{ b.email }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tour Info</p>
+                            <p class="font-bold text-slate-800">{{ b.site_name }}</p>
+                            <p class="text-sm text-slate-600">Start: {{ b.travel_date }}</p>
+                            <p class="text-sm text-slate-600">Duration: {{ b.trip_days }} Days</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 mb-6">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Passenger List ({{ b.travelers_count }})</p>
+                        <ul class="space-y-2.5">
+                            {% for pax in b.parsed_travelers %}
+                            <li class="flex items-center justify-between text-sm bg-white p-2 rounded-lg border border-slate-100">
+                                <span class="font-semibold text-slate-700"><i class="fas fa-user text-slate-400 mr-2 text-xs"></i> {{ pax.name }}</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded">{{ pax.country }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-center bg-green-50 p-5 rounded-xl border border-green-100 gap-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-3xl text-green-500"></i>
+                            <div>
+                                <p class="text-[10px] font-bold text-green-600 uppercase tracking-wider mb-0.5">Status: {{ b.payment_status }}</p>
+                                <p class="text-xl font-black text-slate-800">${{ b.total_amount }}</p>
+                            </div>
+                        </div>
+                        <a href="/bookings/invoice/{{ b.booking_ref }}" target="_blank" class="px-5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-slate-700 font-bold text-xs transition-all flex items-center gap-2 shadow-sm">
+                            <i class="fas fa-receipt text-slate-400"></i> Open Invoice
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </main>
+
+    <script>
+        function toggleModal(modalID) {
+            const modal = document.getElementById(modalID);
+            if (modal) {
+                modal.classList.toggle('hidden');
+                modal.classList.toggle('flex');
+            }
+        }
+
+        function openEditPromoModal(id, code, discount, isActiveStr) {
+            document.getElementById('editPromoForm').action = `/admin/update-promo/${id}`;
+            document.getElementById('editPromoCode').value = code;
+            document.getElementById('editPromoDiscount').value = discount;
+            
+            const activeSelect = document.getElementById('editPromoActive');
+            activeSelect.value = (isActiveStr === 'True' || isActiveStr === 'true') ? 'true' : 'false';
+            
+            toggleModal('editPromoModal');
+        }
+
+        function switchTab(tab) {
+            const activeBtn = document.getElementById('btn-active-trips');
+            const historyBtn = document.getElementById('btn-history-trips');
+            const activeBody = document.getElementById('active-tbody');
+            const historyBody = document.getElementById('history-tbody');
+
+            // Light theme tab styling logic
+            if (tab === 'active') {
+                activeBtn.className = "px-4 py-1.5 text-xs font-bold rounded-md transition-all bg-white text-slate-800 shadow-sm border border-slate-200";
+                historyBtn.className = "px-4 py-1.5 text-xs font-bold rounded-md transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 border border-transparent";
+                activeBody.classList.remove('hidden');
+                historyBody.classList.add('hidden');
+            } else {
+                historyBtn.className = "px-4 py-1.5 text-xs font-bold rounded-md transition-all bg-white text-slate-800 shadow-sm border border-slate-200";
+                activeBtn.className = "px-4 py-1.5 text-xs font-bold rounded-md transition-all text-slate-500 hover:text-slate-700 hover:bg-slate-200/50 border border-transparent";
+                historyBody.classList.remove('hidden');
+                activeBody.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            today.setHours(0,0,0,0); 
+
+            const rows = document.querySelectorAll('.booking-row');
+            const activeBody = document.getElementById('active-tbody');
+            const historyBody = document.getElementById('history-tbody');
+            const noActiveMsg = document.getElementById('no-active-msg');
+            const noHistoryMsg = document.getElementById('no-history-msg');
+            
+            let totalRevenue = 0;
+            let activeCount = 0;
+            let historyCount = 0;
+
+            rows.forEach(row => {
+                const dateStr = row.getAttribute('data-date');
+                const days = parseInt(row.getAttribute('data-days'), 10);
+                const status = row.getAttribute('data-status');
+                const amount = parseInt(row.getAttribute('data-amount'), 10);
+
+                totalRevenue += amount;
+
+                const tripStart = new Date(dateStr);
+                const tripEnd = new Date(tripStart);
+                tripEnd.setDate(tripEnd.getDate() + days);
+                tripEnd.setHours(0,0,0,0);
+
+                if (today > tripEnd || status === 'Archived') {
+                    historyCount++;
+                    const archiveForm = row.querySelector('.archive-form');
+                    if(archiveForm) archiveForm.classList.add('hidden');
+                    
+                    const badge = row.querySelector('.status-badge');
+                    if(badge) {
+                        badge.innerHTML = 'Completed';
+                        // Clean styling for archived badge
+                        badge.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200';
+                    }
+                    
+                    const countdown = row.querySelector('.countdown-badge');
+                    if(countdown) {
+                        countdown.innerHTML = 'Trip Ended';
+                        countdown.className = 'text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 uppercase tracking-wider';
+                    }
+
+                    historyBody.appendChild(row); 
+                } else {
+                    activeCount++;
+                }
+            });
+
+            if (activeCount === 0) noActiveMsg.classList.remove('hidden');
+            if (historyCount === 0) noHistoryMsg.classList.remove('hidden');
+
+            document.getElementById('kpi-revenue').innerText = "$" + totalRevenue.toLocaleString();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Vardhan Holidays India | Premium Tours{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="icon" type="image/png" href="/static/images/icon.png">
+    <link rel="apple-touch-icon" href="/static/images/icon.png">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f8fafc; 
+            color: #334155; 
+            overflow-x: hidden; 
+        }
+
+        /* --- PREMIUM ENHANCED NAVBAR STYLES --- */
+        .light-nav { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border-bottom: 1px solid rgba(241, 245, 249, 0.6);
+            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.04), 
+                        inset 0 -1px 0 0 rgba(249, 115, 22, 0.05);
+        }
+
+        /* Animated underline effect for links */
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 0.5rem 0.25rem;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #f97316, #ef4444);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .nav-link:hover { 
+            color: #f97316; 
+            transform: translateY(-1px);
+        }
+        
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        /* High-conversion, attention-grabbing premium CTA */
+        .premium-cta {
+            background: linear-gradient(135deg, #ff6b00 0%, #ff3d00 50%, #e63900 100%);
+            background-size: 200% auto;
+            box-shadow: 0 4px 15px rgba(255, 76, 0, 0.35);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .premium-cta:hover {
+            background-position: right center;
+            box-shadow: 0 8px 25px rgba(255, 76, 0, 0.45);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .premium-cta:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* --- END PREMIUM NAVBAR STYLES --- */
+
+        /* Clean White Modals */
+        .light-modal { 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Smooth Scrolling & Input styles */
+        html { scroll-behavior: smooth; }
+        
+        .modal-input {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1rem 1.25rem;
+            border-radius: 1rem;
+            color: #1e293b;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .modal-input:focus {
+            border-color: #f97316;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+            background: #ffffff;
+        }
+
+        /* Subtle Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-orange-100 selection:text-orange-900">
+
+    <!-- Premium Animated Sticky Navbar -->
+    <nav class="fixed top-0 w-full z-[100] light-nav py-3.5 md:py-4 transition-all duration-300">
+        <div class="container mx-auto flex justify-between items-center max-w-7xl px-4 md:px-6">
+            
+            <!-- Brand Logo Wrapper with subtle scale effect -->
+            <a href="/" class="flex items-center gap-2.5 md:gap-3.5 group transition-transform duration-300 hover:scale-[1.01]">
+                <div class="relative overflow-hidden rounded-lg p-1">
+                    <img src="/static/images/logo.png" alt="Vardhan Holidays India" class="h-9 md:h-11 object-contain transition-transform duration-500 group-hover:rotate-3">
+                </div>
+                <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-900 to-orange-700 text-xl tracking-tight hidden sm:block">
+                    Vardhan Holidays
+                </span>
+            </a>
+            
+            <!-- Navigation Items Container -->
+            <div class="flex gap-5 md:gap-7 items-center">
+                
+                <!-- Live Active User Session Tag -->
+                <div id="user-display" class="hidden md:flex items-center gap-2.5 border-r border-slate-200/80 pr-5 py-1">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span id="user-greeting" class="text-slate-600 font-bold text-xs tracking-wide uppercase">Guest</span>
+                </div>
+                
+                <!-- Nav Action Links -->
+                <a href="/" class="nav-link" title="Home">
+                    <i class="fas fa-home text-xl md:text-sm text-slate-500 hover:text-orange-500 transition-colors"></i>
+                    <span class="hidden md:inline uppercase tracking-widest text-[11px]">Home</span>
+                </a>
+                
+                <a href="/explorer" class="nav-link" title="Packages">
+                    <i class="fas fa-map-marked-alt text-xl md:text-sm text-slate-500 hover:text-orange-500 transition-colors"></i>
+                    <span class="hidden md:inline uppercase tracking-widest text-[11px]">Packages</span>
+                </a>
+                
+                <button onclick="toggleModal('searchModal')" class="nav-link" title="Search">
+                    <i class="fas fa-search text-xl md:text-sm text-slate-500 hover:text-orange-500 transition-colors"></i>
+                    <span class="hidden md:inline uppercase tracking-widest text-[11px]">Search</span>
+                </button>
+                
+                <!-- High-conversion Action Conversion Button -->
+                <button onclick="toggleModal('contactModal')" class="premium-cta text-white px-5 md:px-6 py-2.5 rounded-xl font-extrabold transition-all flex items-center gap-2 text-xs md:text-sm tracking-wide">
+                    <i class="fas fa-headset text-base md:text-sm animate-bounce"></i>
+                    <span class="hidden md:inline uppercase tracking-widest text-[11px]">Support</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24 md:pt-28">
+        {% block content %}{% endblock %}
+    </main>
+
+    <div class="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[90] flex flex-col gap-4">
+        <a href="/register" title="Register / Sign Up" class="w-12 h-12 md:w-14 md:h-14 bg-white border border-slate-200 rounded-full flex items-center justify-center text-lg md:text-xl shadow-lg hover:border-orange-300 hover:text-orange-600 transition-all group relative text-slate-600">
+            <i class="fas fa-user-plus"></i>
+            <span class="absolute right-16 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-md text-slate-600">Register</span>
+        </a>
+        <a href="/chatbot-ui" title="AI Assistant" class="w-14 h-14 md:w-16 md:h-16 bg-orange-50 border border-orange-200 rounded-full flex items-center justify-center text-2xl shadow-xl hover:scale-105 transition-all group relative text-orange-600">
+            <img src="/static/images/icon.png" class="w-8 h-8 object-contain" alt="AI">
+            <span class="absolute right-20 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-md text-slate-600">AI Assistant</span>
+        </a>
+    </div>
+
+    <div id="searchModal" class="fixed inset-0 z-[200] hidden bg-slate-900/40 backdrop-blur-sm flex items-start justify-center pt-32 px-4">
+        <div class="light-modal w-full max-w-2xl p-6 md:p-8 rounded-[2rem] relative shadow-2xl">
+            <button onclick="toggleModal('searchModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 text-xl w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-200 transition-colors"><i class="fas fa-times"></i></button>
+            <h3 class="text-xl font-bold mb-6 flex items-center gap-3 text-slate-800"><i class="fas fa-search text-orange-500"></i> Search Packages</h3>
+            <form action="/explorer" method="GET" class="flex flex-col sm:flex-row gap-3">
+                <input type="text" name="search" placeholder="Search destinations, cities, or packages..." class="w-full modal-input text-base">
+                <button type="submit" class="px-8 py-4 bg-slate-800 hover:bg-slate-700 font-bold text-white rounded-xl transition-all shadow-md">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="contactModal" class="fixed inset-0 z-[200] hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="light-modal w-full max-w-lg p-8 md:p-10 rounded-[2rem] relative shadow-2xl">
+            <button onclick="toggleModal('contactModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 text-xl w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-200 transition-colors"><i class="fas fa-times"></i></button>
+            <h3 class="text-2xl font-bold mb-2 text-slate-800">Contact <span class="text-orange-600">Support</span></h3>
+            <p class="text-slate-500 text-sm font-medium mb-6">Have questions? Send us a message directly.</p>
+            <form id="globalContactForm" class="space-y-4">
+                <input type="text" name="name" id="globalContactName" required placeholder="Your Name" class="modal-input text-sm">
+                <input type="email" name="email" required placeholder="Your Email" class="modal-input text-sm">
+                <input type="hidden" name="subject" value="Global Navbar Enquiry">
+                <textarea name="message" rows="4" required placeholder="How can we help you today?" class="modal-input text-sm resize-none"></textarea>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 py-4 rounded-xl font-bold text-white transition-all shadow-md hover:shadow-orange-500/30 mt-2 flex justify-center items-center gap-2">
+                    Send Message <i class="fas fa-paper-plane text-xs"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-8 mt-12 relative z-10">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                
+                <div class="space-y-4">
+                    <img src="/static/images/logo.png" alt="Vardhan Holidays India Logo" class="h-10 object-contain mb-4">
+                    <p class="text-slate-500 text-sm leading-relaxed">Your trusted partner in exploring the rich heritage, majestic temples, and beautiful landscapes of South India with premium comfort and local expertise.</p>
+                    <div class="flex gap-4 pt-2">
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-orange-50 hover:text-orange-500 transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-orange-50 hover:text-orange-500 transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-orange-50 hover:text-orange-500 transition-colors"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-6 uppercase text-sm tracking-wider">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/" class="text-slate-500 hover:text-orange-600 text-sm font-medium transition-colors">Home</a></li>
+                        <li><a href="/explorer" class="text-slate-500 hover:text-orange-600 text-sm font-medium transition-colors">Tour Packages</a></li>
+                        <li><a href="/bookings/portal" class="text-slate-500 hover:text-orange-600 text-sm font-medium transition-colors">Track My Booking</a></li>
+                        <li><a href="/chatbot-ui" class="text-slate-500 hover:text-orange-600 text-sm font-medium transition-colors">AI Travel Assistant</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-6 uppercase text-sm tracking-wider">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/legal" class="text-slate-500 hover:text-orange-600 text-sm font-medium transition-colors">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-6 uppercase text-sm tracking-wider">Contact Us</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-orange-500 mt-1"></i>
+                            <span class="text-slate-500 text-sm font-medium">Vardhan Tower, South Main St,<br>Thanjavur, Tamil Nadu, 613001<br>India</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone-alt text-orange-500"></i>
+                            <a href="tel:+919566960500" class="text-slate-500 hover:text-orange-600 text-sm font-medium transition-colors">+91 95669 60500</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-orange-500"></i>
+                            <a href="mailto:support@vardhanholidays.com" class="text-slate-500 hover:text-orange-600 text-sm font-medium transition-colors">support@vardhanholidays.com</a>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-400 text-xs font-medium text-center md:text-left">
+                    &copy; <script>document.write(new Date().getFullYear())</script> Vardhan Holidays India. All Rights Reserved.
+                </p>
+                <p class="text-slate-400 text-xs font-medium text-center md:text-right flex items-center gap-1">
+                    Developed with <i class="fas fa-heart text-red-500 mx-1"></i> by <span class="font-bold text-slate-600">Vardhan Holidays India</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Modal Logic
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('hidden');
+        }
+
+        // Local Storage / Session Identity Check
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('inkwake_username');
+            if (savedName) {
+                const greeting = document.getElementById('user-greeting');
+                const display = document.getElementById('user-display');
+                const contactName = document.getElementById('globalContactName');
+                
+                if (greeting) greeting.innerText = savedName;
+                if (display) display.classList.remove('hidden');
+                // Automatically fill the contact form name if logged in
+                if (contactName) contactName.value = savedName;
+            }
+        });
+
+        // Global Contact Form Submission
+        document.getElementById('globalContactForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = 'Sending... <i class="fas fa-circle-notch fa-spin text-xs ml-2"></i>';
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch('/submit-enquiry', { method: 'POST', body: new FormData(e.target) });
+                if (res.ok) {
+                    alert("Message sent successfully! Our support team will respond shortly.");
+                    toggleModal('contactModal');
+                    e.target.reset();
+                } else {
+                    alert("Failed to send message. Please try again later.");
+                }
+            } catch { 
+                alert("Network error. Could not reach our servers."); 
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
